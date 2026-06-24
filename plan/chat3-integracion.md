@@ -40,3 +40,33 @@ No sabemos si el sistema existente tiene API. Antes de definir la estrategia hay
 - Manejo de sincronización y consistencia de datos
 - Impacto en el carnet digital (el estado de cuotas tiene que estar siempre actualizado)
 - Plan de contingencia si la integración no es viable
+
+
+## Módulo de pagos y débito automático
+
+El débito automático se gestiona mediante archivos que el club sube manualmente
+a la plataforma de Banco Macro y Prisma. No hay API directa de débito automático.
+
+**Contexto operativo actual:**
+El proceso hoy es manual de punta a punta: alguien genera los datos de cobro,
+los sube al banco, y después actualiza el estado de los socios a mano
+tras descargar la rendición.
+
+**Lo que el sistema nuevo resuelve:**
+- Generación automática del archivo de débitos mensual en formato COELSA
+- Procesamiento automático del archivo de rendición al subirlo al sistema
+- Actualización automática de estados de cuotas y carnets
+- El tesorero solo interviene en los dos pasos de subida/descarga del banco
+
+**Decisión de migración:**
+Dado que el sistema nuevo gestiona débitos, carnets y estados de socios,
+el sistema de gestión existente queda reemplazado y no integrado.
+La migración es una exportación única de datos: padrón de socios,
+categorías, historial de pagos y CBU/tarjetas adheridas.
+
+**Lo que necesito en este chat:**
+- Identificar el formato de exportación del sistema actual (CSV, Excel, otro)
+- Definir el plan de migración de datos al nuevo sistema PostgreSQL
+- Definir el formato COELSA requerido por Macro/Prisma para los archivos de débito
+- Estrategia de validación de datos migrados antes del primer débito real
+- Plan de contingencia: qué pasa si la migración tiene datos inconsistentes

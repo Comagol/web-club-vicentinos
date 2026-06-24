@@ -75,3 +75,35 @@ TypeScript (Prisma, TypeORM, Drizzle) y es el estándar en proyectos Node.js + T
 
 **Migración futura:** cuando el proyecto esté en producción y se conozca el volumen real de uso,
 evaluar migración a AWS RDS o DigitalOcean Managed Databases si el costo o la escala lo requieren.
+
+
+## Módulo de pagos y débito automático
+
+El débito automático se gestiona mediante archivos que el club sube manualmente
+a la plataforma de Banco Macro y Prisma. No hay API directa de débito automático.
+
+El sistema debe automatizar la generación y lectura de esos archivos,
+dejando solo la subida y descarga como acción manual del tesorero.
+
+**Flujo completo:**
+1. El sistema genera automáticamente el archivo de débitos del mes
+   en el formato requerido por Macro/Prisma (formato COELSA)
+2. El tesorero descarga el archivo desde el panel de admin y lo sube al banco
+3. El banco ejecuta los débitos y el tesorero descarga el archivo de rendición
+4. El tesorero sube el archivo de rendición al sistema
+5. El sistema lo procesa, actualiza el estado de cada cuota
+   y refleja los cambios en los carnets automáticamente
+
+**Lo que el backend debe resolver:**
+- Generación del archivo de débitos en formato COELSA
+- Endpoint para descarga del archivo generado
+- Endpoint para subida del archivo de rendición
+- Procesamiento del archivo de rendición y actualización de estados
+- Lógica de marcado de socios morosos tras cuotas impagas
+- Notificación automática al socio cuando una cuota no se cobra
+- Actualización automática del estado del carnet según estado de cuotas
+
+**Decisión de stack de pagos:**
+No se usa MercadoPago ni ninguna pasarela externa para las cuotas sociales.
+El canal es Banco Macro + Prisma vía archivos. Para la boutique y actividades
+recaudatorias se evaluará pasarela de pagos online en una etapa posterior.
