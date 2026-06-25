@@ -8,7 +8,7 @@ export default defineConfig({
     fileParallelism: false,
     env: {
       NODE_ENV: "test",
-      DATABASE_URL: "postgresql://vicentinos:vicentinos@localhost:5432/vicentinos_dev?schema=public",
+      DATABASE_URL: "postgresql://vicentinos:vicentinos@localhost:5432/vicentinos_test?schema=public",
       JWT_ACCESS_SECRET: "test-access-secret",
       JWT_REFRESH_SECRET: "test-refresh-secret",
       PORT: "3001",

@@ -2,14 +2,15 @@ import { prisma } from "../../shared/prisma";
 import { NotFoundError, ForbiddenError } from "../../shared/errors";
 import { AccessPayload } from "../auth/jwt";
 import { CreateSocioInput, UpdateSocioInput } from "./socios.schemas";
+import { EstadoMembresia } from "@prisma/client";
 
-export async function getSocios(filters: { nombre?: string; estado?: string }) {
+export async function getSocios(filters: { nombre?: string; estado?: EstadoMembresia }) {
   return prisma.socio.findMany({
     where: {
       ...(filters.nombre && {
         nombre: { contains: filters.nombre, mode: "insensitive" },
       }),
-      ...(filters.estado && { estadoMembresia: filters.estado as any }),
+      ...(filters.estado && { estadoMembresia: filters.estado }),
     },
     include: { categoriaSocio: true },
     orderBy: { apellido: "asc" },

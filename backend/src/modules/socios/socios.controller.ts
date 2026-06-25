@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../../shared/asyncHandler";
 import * as sociosService from "./socios.service";
+import { ListSociosQuery } from "./socios.schemas";
 
 export const getSociosHandler = asyncHandler(async (req: Request, res: Response) => {
-  const { nombre, estado } = req.query as Record<string, string>;
+  const { nombre, estado } = req.query as ListSociosQuery;
   const socios = await sociosService.getSocios({ nombre, estado });
   res.json({ socios });
 });

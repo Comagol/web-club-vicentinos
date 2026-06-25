@@ -35,5 +35,6 @@ export const logoutHandler = (_req: Request, res: Response): void => {
 };
 
 export const meHandler = asyncHandler(async (req: Request, res: Response) => {
-  res.json({ usuario: req.user });
+  const user = req.user!;
+  res.json({ usuario: { id: user.sub, email: user.email, roles: user.roles } });
 });

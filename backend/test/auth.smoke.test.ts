@@ -90,6 +90,9 @@ describe("GET /auth/me", () => {
     expect(res.status).toBe(200);
     expect(res.body.usuario.email).toBe("admin@example.com");
     expect(res.body.usuario.roles).toContain("ADMIN");
+    expect(res.body.usuario.id).toBeDefined();
+    expect(res.body.usuario.sub).toBeUndefined();
+    expect(res.body.usuario.iat).toBeUndefined();
   });
 });
 

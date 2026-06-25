@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { EstadoMembresia } from "@prisma/client";
 
 export const createSocioSchema = z.object({
   nombre: z.string().min(1),
@@ -13,5 +14,11 @@ export const createSocioSchema = z.object({
 
 export const updateSocioSchema = createSocioSchema.partial();
 
+export const listSociosQuerySchema = z.object({
+  nombre: z.string().optional(),
+  estado: z.nativeEnum(EstadoMembresia).optional(),
+});
+
 export type CreateSocioInput = z.infer<typeof createSocioSchema>;
 export type UpdateSocioInput = z.infer<typeof updateSocioSchema>;
+export type ListSociosQuery = z.infer<typeof listSociosQuerySchema>;

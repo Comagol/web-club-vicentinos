@@ -16,3 +16,18 @@ export const validate =
       }
     }
   };
+
+export const validateQuery =
+  (schema: z.ZodType) =>
+  (req: Request, _res: Response, next: NextFunction): void => {
+    try {
+      req.query = schema.parse(req.query) as typeof req.query;
+      next();
+    } catch (err) {
+      if (err instanceof ZodError) {
+        next(new ValidationError("Validation failed", err.issues));
+      } else {
+        next(err);
+      }
+    }
+  };
