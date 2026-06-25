@@ -1,3 +1,21 @@
 import { Router } from "express";
+import { requireAuth, requireRole } from "../auth/rbac";
+import { validate } from "../../shared/validate";
+import { createSocioSchema, updateSocioSchema } from "./socios.schemas";
+import {
+  getSociosHandler,
+  getSocioByIdHandler,
+  getCarnetHandler,
+  createSocioHandler,
+  updateSocioHandler,
+  getCuotasHandler,
+} from "./socios.controller";
+
 export const sociosRouter = Router();
-sociosRouter.all("/{*path}", (_req, res) => res.status(501).json({ error: { message: "Not implemented", code: "NOT_IMPLEMENTED" } }));
+
+sociosRouter.get("/", requireAuth, requireRole("ADMIN", "COMISION_DIRECTIVA"), getSociosHandler);
+sociosRouter.post("/", requireAuth, requireRole("ADMIN"), validate(createSocioSchema), createSocioHandler);
+sociosRouter.get("/:id", requireAuth, requireRole("ADMIN", "COMISION_DIRECTIVA"), getSocioByIdHandler);
+sociosRouter.patch("/:id", requireAuth, requireRole("ADMIN"), validate(updateSocioSchema), updateSocioHandler);
+sociosRouter.get("/:id/cuotas", requireAuth, requireRole("ADMIN", "COMISION_DIRECTIVA"), getCuotasHandler);
+sociosRouter.get("/:id/carnet", requireAuth, getCarnetHandler);
