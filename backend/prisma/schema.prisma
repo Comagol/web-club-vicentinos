@@ -39,6 +39,9 @@ model Usuario {
   roles    UsuarioRol[]
   socio    Socio?
   empleado Empleado?
+
+  solicitudesCreadas  Solicitud[] @relation("SolicitudCreador")
+  solicitudesResueltas Solicitud[] @relation("SolicitudResolutor")
 }
 
 model UsuarioRol {
@@ -83,6 +86,8 @@ model Socio {
   subcomisiones          SubcomisionMiembro[]
   cuotas                 Cuota[]
   mediosPago             MedioPagoAdherido[]
+  solicitudes            Solicitud[]
+  inscripciones          InscripcionActividad[]
 }
 
 enum TipoGrupoFamiliar {
@@ -174,6 +179,8 @@ model Subcomision {
   activa      Boolean @default(true)
 
   miembros    SubcomisionMiembro[]
+  solicitudes Solicitud[]
+  actividades ActividadRecaudatoria[]
 }
 
 model SubcomisionMiembro {
@@ -285,4 +292,107 @@ model PagoMercadoPago {
   rawResponse     Json?
 
   cuota  Cuota?  @relation(fields: [cuotaId], references: [id])
+}
+
+enum OrigenSolicitud {
+  SOCIO
+  SUBCOMISION
+}
+
+enum TipoSolicitud {
+  RESERVA_ESPACIO
+  ACTIVIDAD_RECAUDATORIA
+}
+
+enum EstadoSolicitud {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+enum UsoEspacio {
+  PERSONAL
+  INSTITUCIONAL
+}
+
+enum EstadoPagoInscripcion {
+  PENDIENTE
+  PAGADO
+  NO_APLICA
+}
+
+model Solicitud {
+  id                   String          @id @default(uuid())
+  origen               OrigenSolicitud
+  tipo                 TipoSolicitud
+  creadoPorUsuarioId   String
+  socioId              String?
+  subcomisionId        String?
+  estado               EstadoSolicitud @default(PENDIENTE)
+  notaRechazo          String?
+  resueltoPorUsuarioId String?
+  fechaSolicitud       DateTime        @default(now())
+  fechaResolucion      DateTime?
+  solicitudPadreId     String?         @unique
+
+  creadoPor   Usuario      @relation("SolicitudCreador", fields: [creadoPorUsuarioId], references: [id])
+  resueltoPor Usuario?     @relation("SolicitudResolutor", fields: [resueltoPorUsuarioId], references: [id])
+  socio       Socio?       @relation(fields: [socioId], references: [id])
+  subcomision Subcomision? @relation(fields: [subcomisionId], references: [id])
+  solicitudPadre Solicitud? @relation("SolicitudReenvio", fields: [solicitudPadreId], references: [id])
+  reenvio        Solicitud? @relation("SolicitudReenvio")
+
+  reservaEspacio       ReservaEspacio?
+  actividadRecaudatoria ActividadRecaudatoria?
+}
+
+model Espacio {
+  id          String  @id @default(uuid())
+  nombre      String  @unique
+  descripcion String?
+  capacidad   Int?
+  activo      Boolean @default(true)
+
+  reservas ReservaEspacio[]
+}
+
+model ReservaEspacio {
+  id          String     @id @default(uuid())
+  solicitudId String     @unique
+  espacioId   String
+  fecha       DateTime
+  horaInicio  String
+  horaFin     String
+  uso         UsoEspacio
+
+  solicitud Solicitud @relation(fields: [solicitudId], references: [id])
+  espacio   Espacio   @relation(fields: [espacioId], references: [id])
+}
+
+model ActividadRecaudatoria {
+  id            String   @id @default(uuid())
+  solicitudId   String   @unique
+  subcomisionId String
+  nombre        String
+  descripcion   String?
+  fecha         DateTime
+  cupo          Int?
+  precio        Decimal?
+
+  solicitud   Solicitud   @relation(fields: [solicitudId], references: [id])
+  subcomision Subcomision @relation(fields: [subcomisionId], references: [id])
+  inscripciones InscripcionActividad[]
+}
+
+model InscripcionActividad {
+  id               String                @id @default(uuid())
+  actividadId      String
+  socioId          String
+  fechaInscripcion DateTime              @default(now())
+  estadoPago       EstadoPagoInscripcion @default(NO_APLICA)
+
+  actividad ActividadRecaudatoria @relation(fields: [actividadId], references: [id])
+  socio     Socio                 @relation(fields: [socioId], references: [id])
+
+  @@unique([actividadId, socioId])
 }
