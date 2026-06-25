@@ -1,0 +1,19 @@
+{
+  "name": "vicentinos-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "prisma generate",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "prisma": "^5.18.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0"
+  }
+}
