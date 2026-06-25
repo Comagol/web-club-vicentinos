@@ -1,9 +1,0 @@
-[2mEnvironment variables loaded from .env[22m
-[2mPrisma schema loaded from prisma/schema.prisma[22m
-[2mDatasource "db": PostgreSQL database "ada", schema "public" at "localhost:5432"[22m
-
-[1m[31mError: [39m[22mPrisma Migrate has detected that the environment is non-interactive, which is not supported.
-
-`prisma migrate dev` is an interactive command designed to create new migrations and evolve the database in development.
-To apply existing migrations in deployments, use [1m[32mprisma migrate deploy[39m[22m.
-See [4mhttps://www.prisma.io/docs/reference/api-reference/command-reference#migrate-deploy[24m
