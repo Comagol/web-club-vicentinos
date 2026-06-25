@@ -3,9 +3,11 @@ import { PrismaClient } from "@prisma/client";
 
 export const prisma = new PrismaClient();
 
-// Order matters: each table must be deleted before any table it has a
-// foreign key pointing to (topological sort of the FK graph). Only include
-// tables that have been defined so far.
+// Only list tables that exist in the current migration. DELETE FROM a table
+// before its migration runs would throw "relation does not exist" in Postgres.
+// Errors (including FK violations or connection drops) must propagate—do not catch.
+// When adding new models (tasks 3-9): extend this list with the new tables in
+// topologically correct position (child tables before parent tables they reference).
 const TABLES_IN_DELETE_ORDER = [
   "UsuarioRol",
   "GrupoFamiliarMiembro",
@@ -18,11 +20,6 @@ const TABLES_IN_DELETE_ORDER = [
 
 export async function cleanDatabase(): Promise<void> {
   for (const table of TABLES_IN_DELETE_ORDER) {
-    try {
-      await prisma.$executeRawUnsafe(`DELETE FROM "${table}"`);
-    } catch (error: any) {
-      // Ignore errors from deleting tables that don't exist yet
-      // The full error list will be added as more migrations are created
-    }
+    await prisma.$executeRawUnsafe(`DELETE FROM "${table}"`);
   }
 }
