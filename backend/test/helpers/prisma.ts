@@ -9,6 +9,8 @@ export const prisma = new PrismaClient();
 // When adding new models (tasks 3-9): extend this list with the new tables in
 // topologically correct position (child tables before parent tables they reference).
 const TABLES_IN_DELETE_ORDER = [
+  "Noticia",
+  "Resultado",
   "UsuarioRol",
   "SocioDivisionTemporada",
   "SubcomisionMiembro",

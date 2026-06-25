@@ -45,6 +45,8 @@ model Usuario {
 
   tareasCreadas    Tarea[]
   tareaHistoriales TareaHistorial[]
+
+  noticias Noticia[]
 }
 
 model UsuarioRol {
@@ -152,6 +154,7 @@ model Division {
   tira      TiraHockey?
 
   asignaciones SocioDivisionTemporada[]
+  resultados   Resultado[]
 
   @@unique([deporte, categoria, tira])
 }
@@ -161,6 +164,7 @@ model Temporada {
   anio Int    @unique
 
   asignaciones SocioDivisionTemporada[]
+  resultados   Resultado[]
 }
 
 model SocioDivisionTemporada {
@@ -501,4 +505,35 @@ model ItemPedido {
 
   pedido           Pedido           @relation(fields: [pedidoId], references: [id])
   varianteProducto VarianteProducto @relation(fields: [varianteProductoId], references: [id])
+}
+
+enum CondicionPartido {
+  LOCAL
+  VISITANTE
+}
+
+model Noticia {
+  id               String   @id @default(uuid())
+  titulo           String
+  contenido        String
+  imagenUrl        String?
+  autorUsuarioId   String
+  fechaPublicacion DateTime @default(now())
+  publicado        Boolean  @default(false)
+
+  autor Usuario @relation(fields: [autorUsuarioId], references: [id])
+}
+
+model Resultado {
+  id             String           @id @default(uuid())
+  divisionId     String
+  temporadaId    String
+  rival          String
+  fecha          DateTime
+  condicion      CondicionPartido
+  resultadoPropio Int
+  resultadoRival  Int
+
+  division  Division  @relation(fields: [divisionId], references: [id])
+  temporada Temporada @relation(fields: [temporadaId], references: [id])
 }
