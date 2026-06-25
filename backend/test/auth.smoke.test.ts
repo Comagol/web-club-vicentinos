@@ -57,6 +57,19 @@ describe("POST /auth/login", () => {
     expect(res.status).toBe(422);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
+
+  it("returns 401 for deactivated user", async () => {
+    const passwordHash = await bcrypt.hash("pass", 12);
+    await prisma.usuario.create({
+      data: { email: "inactive@example.com", passwordHash, activo: false },
+    });
+
+    const res = await request(app)
+      .post("/auth/login")
+      .send({ email: "inactive@example.com", password: "pass" });
+
+    expect(res.status).toBe(401);
+  });
 });
 
 describe("GET /auth/me", () => {
@@ -107,6 +120,6 @@ describe("POST /auth/logout", () => {
     const res = await request(app).post("/auth/logout");
     expect(res.status).toBe(200);
     const cookies: string[] = (res.headers["set-cookie"] as unknown as string[]) ?? [];
-    expect(cookies.some((c) => c.includes("accessToken=;") || c.includes("accessToken=;"))).toBe(true);
+    expect(cookies.some((c) => c.includes("accessToken=;") || c.includes("refreshToken=;"))).toBe(true);
   });
 });

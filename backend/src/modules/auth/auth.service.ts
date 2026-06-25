@@ -32,6 +32,8 @@ export async function refresh(refreshToken: string) {
     include: { roles: true },
   });
 
+  if (!usuario.activo) throw new UnauthorizedError("Credenciales inválidas");
+
   const roles = usuario.roles.map((r) => r.rol as string);
   const payload: AccessPayload = { sub: usuario.id, email: usuario.email, roles };
 
