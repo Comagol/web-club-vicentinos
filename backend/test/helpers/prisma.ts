@@ -18,8 +18,14 @@ const TABLES_IN_DELETE_ORDER = [
   "Temporada",
   "Subcomision",
   "Empleado",
+  "PagoMercadoPago",
+  "Cuota",
+  "MedioPagoAdherido",
+  "ArchivoRendicion",
+  "ArchivoDebito",
   "Socio",
   "Usuario",
+  "TarifaCuota",
   "CategoriaSocio"
 ];
 

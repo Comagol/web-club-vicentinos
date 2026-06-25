@@ -56,7 +56,8 @@ model CategoriaSocio {
   nombre      String  @unique
   descripcion String?
 
-  socios Socio[]
+  socios  Socio[]
+  tarifas TarifaCuota[]
 }
 
 model Socio {
@@ -80,6 +81,8 @@ model Socio {
   gruposFamiliares       GrupoFamiliarMiembro[]
   divisionesPorTemporada SocioDivisionTemporada[]
   subcomisiones          SubcomisionMiembro[]
+  cuotas                 Cuota[]
+  mediosPago             MedioPagoAdherido[]
 }
 
 enum TipoGrupoFamiliar {
@@ -183,4 +186,103 @@ model SubcomisionMiembro {
   socio       Socio       @relation(fields: [socioId], references: [id])
 
   @@unique([subcomisionId, socioId])
+}
+
+enum MetodoCuota {
+  DEBITO_AUTOMATICO
+  MANUAL
+  MERCADO_PAGO
+}
+
+enum EstadoCuota {
+  PENDIENTE
+  PAGADA
+  VENCIDA
+}
+
+enum TipoMedioPago {
+  CBU
+  TARJETA
+}
+
+enum EstadoPagoMP {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+  REEMBOLSADO
+}
+
+model TarifaCuota {
+  id               String    @id @default(uuid())
+  categoriaSocioId String
+  monto            Decimal
+  vigenteDesde      DateTime
+  vigenteHasta      DateTime?
+
+  categoriaSocio CategoriaSocio @relation(fields: [categoriaSocioId], references: [id])
+}
+
+model Cuota {
+  id              String      @id @default(uuid())
+  socioId         String
+  mes             Int
+  anio            Int
+  monto           Decimal
+  estado          EstadoCuota @default(PENDIENTE)
+  fechaVencimiento DateTime
+  fechaPago        DateTime?
+  metodo          MetodoCuota?
+
+  socio          Socio           @relation(fields: [socioId], references: [id])
+  pagoMercadoPago PagoMercadoPago?
+
+  @@unique([socioId, mes, anio])
+}
+
+model MedioPagoAdherido {
+  id             String        @id @default(uuid())
+  socioId        String
+  tipo           TipoMedioPago
+  datoEnmascarado String
+  activo         Boolean       @default(true)
+
+  socio Socio @relation(fields: [socioId], references: [id])
+}
+
+model ArchivoDebito {
+  id              String   @id @default(uuid())
+  mes             Int
+  anio            Int
+  fechaGeneracion DateTime @default(now())
+  urlArchivo      String
+  generadoPor     String
+
+  rendiciones ArchivoRendicion[]
+
+  @@unique([mes, anio])
+}
+
+model ArchivoRendicion {
+  id                 String    @id @default(uuid())
+  archivoDebitoId    String
+  fechaSubida        DateTime  @default(now())
+  subidoPor          String
+  procesado          Boolean   @default(false)
+  fechaProcesamiento DateTime?
+
+  archivoDebito ArchivoDebito @relation(fields: [archivoDebitoId], references: [id])
+}
+
+model PagoMercadoPago {
+  id              String       @id @default(uuid())
+  cuotaId         String?      @unique
+  pedidoId        String?      @unique
+  mpPaymentId     String       @unique
+  monto           Decimal
+  estado          EstadoPagoMP @default(PENDIENTE)
+  fechaCreacion   DateTime     @default(now())
+  fechaActualizacion DateTime  @updatedAt
+  rawResponse     Json?
+
+  cuota  Cuota?  @relation(fields: [cuotaId], references: [id])
 }
