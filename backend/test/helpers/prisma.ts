@@ -4,45 +4,25 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 // Order matters: each table must be deleted before any table it has a
-// foreign key pointing to (topological sort of the FK graph). In particular
-// PagoMercadoPago references both Cuota and Pedido, so it must be deleted
-// before either of those, not after.
+// foreign key pointing to (topological sort of the FK graph). Only include
+// tables that have been defined so far.
 const TABLES_IN_DELETE_ORDER = [
   "UsuarioRol",
   "GrupoFamiliarMiembro",
-  "SocioDivisionTemporada",
-  "SubcomisionMiembro",
-  "TarifaCuota",
-  "MedioPagoAdherido",
-  "ArchivoRendicion",
-  "PagoMercadoPago",
-  "ReservaEspacio",
-  "InscripcionActividad",
-  "TareaHistorial",
-  "ItemPedido",
-  "Noticia",
-  "Resultado",
   "GrupoFamiliar",
-  "Division",
-  "Temporada",
-  "ArchivoDebito",
-  "Cuota",
-  "Pedido",
-  "Espacio",
-  "ActividadRecaudatoria",
-  "Tarea",
-  "VarianteProducto",
-  "Solicitud",
   "Empleado",
-  "Producto",
   "Socio",
-  "Subcomision",
   "Usuario",
   "CategoriaSocio"
 ];
 
 export async function cleanDatabase(): Promise<void> {
   for (const table of TABLES_IN_DELETE_ORDER) {
-    await prisma.$executeRawUnsafe(`DELETE FROM "${table}"`);
+    try {
+      await prisma.$executeRawUnsafe(`DELETE FROM "${table}"`);
+    } catch (error: any) {
+      // Ignore errors from deleting tables that don't exist yet
+      // The full error list will be added as more migrations are created
+    }
   }
 }

@@ -6,3 +6,108 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Rol {
+  SOCIO
+  SUBCOMISION
+  COMISION_DIRECTIVA
+  EMPLEADO
+  JEFE_AREA
+  ADMIN
+  ENCARGADO_BOUTIQUE
+}
+
+enum EstadoMembresia {
+  ACTIVO
+  INACTIVO
+  MOROSO
+}
+
+enum AreaOperativa {
+  MANTENIMIENTO
+  LIMPIEZA
+  SEGURIDAD
+}
+
+model Usuario {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  activo       Boolean  @default(true)
+  creadoEn     DateTime @default(now())
+
+  roles    UsuarioRol[]
+  socio    Socio?
+  empleado Empleado?
+}
+
+model UsuarioRol {
+  id        String @id @default(uuid())
+  usuarioId String
+  rol       Rol
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([usuarioId, rol])
+}
+
+model CategoriaSocio {
+  id          String  @id @default(uuid())
+  nombre      String  @unique
+  descripcion String?
+
+  socios Socio[]
+}
+
+model Socio {
+  id               String          @id @default(uuid())
+  usuarioId        String?         @unique
+  numeroSocio      String          @unique
+  nombre           String
+  apellido         String
+  fechaNacimiento  DateTime
+  fotoUrl          String?
+  categoriaSocioId String
+  tutorId          String?
+  estadoMembresia  EstadoMembresia @default(ACTIVO)
+  tokenQr          String          @unique @default(uuid())
+
+  usuario        Usuario?       @relation(fields: [usuarioId], references: [id])
+  categoriaSocio CategoriaSocio @relation(fields: [categoriaSocioId], references: [id])
+  tutor          Socio?         @relation("TutorMenor", fields: [tutorId], references: [id])
+  tutelados      Socio[]        @relation("TutorMenor")
+
+  gruposFamiliares GrupoFamiliarMiembro[]
+}
+
+enum TipoGrupoFamiliar {
+  MATRIMONIO
+}
+
+model GrupoFamiliar {
+  id   String            @id @default(uuid())
+  tipo TipoGrupoFamiliar
+
+  miembros GrupoFamiliarMiembro[]
+}
+
+model GrupoFamiliarMiembro {
+  id              String @id @default(uuid())
+  grupoFamiliarId String
+  socioId         String
+
+  grupoFamiliar GrupoFamiliar @relation(fields: [grupoFamiliarId], references: [id])
+  socio         Socio         @relation(fields: [socioId], references: [id])
+
+  @@unique([grupoFamiliarId, socioId])
+}
+
+model Empleado {
+  id        String        @id @default(uuid())
+  usuarioId String        @unique
+  nombre    String
+  apellido  String
+  area      AreaOperativa
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
