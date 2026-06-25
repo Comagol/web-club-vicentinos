@@ -22,6 +22,8 @@ const TABLES_IN_DELETE_ORDER = [
   "Espacio",
   "Solicitud",
   "Subcomision",
+  "TareaHistorial",
+  "Tarea",
   "Empleado",
   "PagoMercadoPago",
   "Cuota",

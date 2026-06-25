@@ -42,6 +42,9 @@ model Usuario {
 
   solicitudesCreadas  Solicitud[] @relation("SolicitudCreador")
   solicitudesResueltas Solicitud[] @relation("SolicitudResolutor")
+
+  tareasCreadas    Tarea[]
+  tareaHistoriales TareaHistorial[]
 }
 
 model UsuarioRol {
@@ -120,6 +123,7 @@ model Empleado {
   area      AreaOperativa
 
   usuario Usuario @relation(fields: [usuarioId], references: [id])
+  tareasAsignadas Tarea[]
 }
 
 enum Deporte {
@@ -395,4 +399,41 @@ model InscripcionActividad {
   socio     Socio                 @relation(fields: [socioId], references: [id])
 
   @@unique([actividadId, socioId])
+}
+
+enum EstadoTarea {
+  PENDIENTE
+  EN_PROCESO
+  CON_LIMITANTE
+  FINALIZADO
+}
+
+model Tarea {
+  id                 String        @id @default(uuid())
+  area               AreaOperativa
+  titulo             String
+  descripcion        String?
+  asignadoAEmpleadoId String
+  creadoPorUsuarioId String
+  estado             EstadoTarea   @default(PENDIENTE)
+  notaLimitante      String?
+  fechaCreacion      DateTime      @default(now())
+  fechaActualizacion DateTime      @updatedAt
+
+  asignadoA Empleado @relation(fields: [asignadoAEmpleadoId], references: [id])
+  creadoPor Usuario  @relation(fields: [creadoPorUsuarioId], references: [id])
+  historial TareaHistorial[]
+}
+
+model TareaHistorial {
+  id             String      @id @default(uuid())
+  tareaId        String
+  estadoAnterior EstadoTarea
+  estadoNuevo    EstadoTarea
+  usuarioId      String
+  fecha          DateTime    @default(now())
+  comentario     String?
+
+  tarea   Tarea   @relation(fields: [tareaId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
 }
