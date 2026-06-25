@@ -91,6 +91,7 @@ model Socio {
   mediosPago             MedioPagoAdherido[]
   solicitudes            Solicitud[]
   inscripciones          InscripcionActividad[]
+  pedidos                Pedido[]
 }
 
 enum TipoGrupoFamiliar {
@@ -296,6 +297,7 @@ model PagoMercadoPago {
   rawResponse     Json?
 
   cuota  Cuota?  @relation(fields: [cuotaId], references: [id])
+  pedido Pedido? @relation(fields: [pedidoId], references: [id])
 }
 
 enum OrigenSolicitud {
@@ -436,4 +438,67 @@ model TareaHistorial {
 
   tarea   Tarea   @relation(fields: [tareaId], references: [id])
   usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+enum EstadoPedido {
+  PENDIENTE_PAGO
+  PAGADO
+  PREPARANDO
+  LISTO_PARA_RETIRAR
+  ENTREGADO
+  CANCELADO
+}
+
+enum MetodoPagoPedido {
+  EFECTIVO
+  MERCADO_PAGO
+}
+
+model Producto {
+  id          String  @id @default(uuid())
+  nombre      String
+  descripcion String?
+  categoria   String?
+  imagenUrl   String?
+  activo      Boolean @default(true)
+
+  variantes VarianteProducto[]
+}
+
+model VarianteProducto {
+  id         String  @id @default(uuid())
+  productoId String
+  talla      String?
+  color      String?
+  precio     Decimal
+  stock      Int     @default(0)
+
+  producto Producto    @relation(fields: [productoId], references: [id])
+  items    ItemPedido[]
+
+  @@unique([productoId, talla, color])
+}
+
+model Pedido {
+  id         String           @id @default(uuid())
+  socioId    String
+  fecha      DateTime         @default(now())
+  metodoPago MetodoPagoPedido
+  estado     EstadoPedido     @default(PENDIENTE_PAGO)
+  total      Decimal
+
+  socio           Socio            @relation(fields: [socioId], references: [id])
+  items           ItemPedido[]
+  pagoMercadoPago PagoMercadoPago?
+}
+
+model ItemPedido {
+  id                 String  @id @default(uuid())
+  pedidoId           String
+  varianteProductoId String
+  cantidad           Int
+  precioUnitario     Decimal
+
+  pedido           Pedido           @relation(fields: [pedidoId], references: [id])
+  varianteProducto VarianteProducto @relation(fields: [varianteProductoId], references: [id])
 }
