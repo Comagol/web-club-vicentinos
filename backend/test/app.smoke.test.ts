@@ -14,5 +14,6 @@ describe("App", () => {
   it("unknown route returns 501 for stub modules", async () => {
     const res = await request(app).get("/solicitudes/anything");
     expect(res.status).toBe(501);
+    expect(res.body.error.code).toBe("NOT_IMPLEMENTED");
   });
 });
