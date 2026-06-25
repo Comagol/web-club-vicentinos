@@ -2,6 +2,8 @@
 
 Spec derivada de `plan/chat1-modelo-datos.md`, con decisiones que también afectan `plan/chat2-backend.md` (Postgres, JWT, RBAC) y `plan/chat3-integracion.md` (migración única desde el sistema viejo, sin integración continua).
 
+**Nota sobre chat2:** el chat2 había decidido no usar pasarela de pago externa para cuotas ("No se usa MercadoPago ni ninguna pasarela externa para las cuotas sociales"). Esa decisión queda **revertida parcialmente**: Mercado Pago se incorpora como método alternativo opcional para cuotas (ver sección Cuotas y pagos), en paralelo al flujo de archivos COELSA con Macro/Prisma, que sigue existiendo sin cambios. Hay que reflejar este cambio en el chat2 también.
+
 ## Decisiones de diseño transversales
 
 **Enums fijos en código** (no requieren tabla, el valor no cambia sin una decisión de negocio mayor):
@@ -29,7 +31,7 @@ Spec derivada de `plan/chat1-modelo-datos.md`, con decisiones que también afect
 - `id`, `email` (único), `password_hash`, `activo`, `creado_en`
 
 **UsuarioRol** (N:M — un usuario puede tener más de un rol, ej. socio + subcomisión)
-- `id`, `usuario_id`, `rol` (enum: socio, subcomision, comision_directiva, empleado, jefe_area, admin)
+- `id`, `usuario_id`, `rol` (enum: socio, subcomision, comision_directiva, empleado, jefe_area, admin, encargado_boutique)
 
 **Socio**
 - `id`, `usuario_id` (FK nullable — null si es menor sin login propio)
@@ -77,8 +79,9 @@ Regla de acceso: un socio tiene `usuario_id` propio solo desde categoría juveni
 - `id`, `categoria_socio_id` (FK), `monto`, `vigente_desde`, `vigente_hasta` (nullable)
 
 **Cuota**
-- `id`, `socio_id`, `mes`, `anio`, `monto`, `estado` (enum: pendiente, pagada, vencida), `fecha_vencimiento`, `fecha_pago` (nullable), `metodo` (enum: debito_automatico, manual)
+- `id`, `socio_id`, `mes`, `anio`, `monto`, `estado` (enum: pendiente, pagada, vencida), `fecha_vencimiento`, `fecha_pago` (nullable), `metodo` (enum: debito_automatico, manual, mercado_pago)
 - Restricción única: (`socio_id`, `mes`, `anio`)
+- Mercado Pago es una opción alternativa que el socio elige cuota por cuota (no reemplaza el débito automático); útil para quien no tiene medio adherido o quiere pagar al instante una cuota vencida.
 
 **MedioPagoAdherido**
 - `id`, `socio_id`, `tipo` (enum: cbu, tarjeta), `dato_enmascarado`, `activo`
@@ -88,6 +91,11 @@ Regla de acceso: un socio tiene `usuario_id` propio solo desde categoría juveni
 
 **ArchivoRendicion**
 - `id`, `archivo_debito_id`, `fecha_subida`, `subido_por`, `procesado` (boolean), `fecha_procesamiento`
+
+**PagoMercadoPago** (pagos por gateway, reutilizable para cuotas y pedidos de boutique)
+- `id`, `cuota_id` (FK nullable), `pedido_id` (FK nullable), `mp_payment_id` (id externo de Mercado Pago), `monto`, `estado` (enum: pendiente, aprobado, rechazado, reembolsado), `fecha_creacion`, `fecha_actualizacion`, `raw_response` (json, nullable — payload del webhook para auditoría)
+- Restricción: exactamente uno de `cuota_id` / `pedido_id` debe estar presente (mutuamente excluyentes), validado en capa de aplicación.
+- Cuando `estado` pasa a `aprobado`, actualiza transaccionalmente el `estado` de la `Cuota` o `Pedido` asociado.
 
 ### Solicitudes (reservas y actividades recaudatorias)
 
@@ -124,6 +132,8 @@ Regla de acceso: un socio tiene `usuario_id` propio solo desde categoría juveni
 
 ### Boutique
 
+Es un e-commerce simple gestionado por los `encargado_boutique`: ellos crean/editan productos, ajustan stock y actualizan el estado de los pedidos. Retiro únicamente en el club — no hay envío a domicilio, por lo que `Pedido` no tiene dirección de entrega.
+
 **Producto**
 - `id`, `nombre`, `descripcion`, `categoria`, `imagen_url`, `activo`
 
@@ -131,7 +141,10 @@ Regla de acceso: un socio tiene `usuario_id` propio solo desde categoría juveni
 - `id`, `producto_id`, `talla` (nullable), `color` (nullable), `precio`, `stock`
 
 **Pedido**
-- `id`, `socio_id`, `fecha`, `estado` (enum: pendiente, pagado, preparando, entregado, cancelado), `total`
+- `id`, `socio_id`, `fecha`, `metodo_pago` (enum: efectivo, mercado_pago), `estado` (enum: pendiente_pago, pagado, preparando, listo_para_retirar, entregado, cancelado), `total`
+- El stock de cada `VarianteProducto` se reserva (se descuenta) al crear el pedido, sin importar el método de pago, para evitar sobreventa.
+- Con `metodo_pago = mercado_pago`, el pedido pasa a `pagado` automáticamente cuando se aprueba el `PagoMercadoPago` asociado (vía webhook).
+- Con `metodo_pago = efectivo`, el pedido queda en `pendiente_pago` hasta que el socio retira y paga en persona; un `encargado_boutique` lo marca como `pagado`/`entregado` en ese momento. Si el socio no retira, el encargado puede cancelar el pedido para liberar el stock reservado.
 
 **ItemPedido**
 - `id`, `pedido_id`, `variante_producto_id`, `cantidad`, `precio_unitario`
@@ -166,6 +179,8 @@ Socio 1──N Cuota
 CategoriaSocio 1──N TarifaCuota
 Socio 1──N MedioPagoAdherido
 ArchivoDebito 1──N ArchivoRendicion (en la práctica 1:1, modelado como 1:N por flexibilidad)
+Cuota 1──0..1 PagoMercadoPago
+Pedido 1──0..1 PagoMercadoPago
 
 Solicitud 1──0..1 ReservaEspacio
 Solicitud 1──0..1 ActividadRecaudatoria
