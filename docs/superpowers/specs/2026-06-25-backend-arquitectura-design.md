@@ -9,7 +9,7 @@
 
 | Concern | Decision |
 |---|---|
-| Runtime | Node.js + TypeScript |
+| Runtime | Node.js + TypeScript |1
 | Framework | Express |
 | ORM | Prisma (already in place from chat1) |
 | Database | PostgreSQL (Docker locally, Supabase for staging/prod) |
