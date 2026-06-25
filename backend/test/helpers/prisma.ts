@@ -10,8 +10,13 @@ export const prisma = new PrismaClient();
 // topologically correct position (child tables before parent tables they reference).
 const TABLES_IN_DELETE_ORDER = [
   "UsuarioRol",
+  "SocioDivisionTemporada",
+  "SubcomisionMiembro",
   "GrupoFamiliarMiembro",
   "GrupoFamiliar",
+  "Division",
+  "Temporada",
+  "Subcomision",
   "Empleado",
   "Socio",
   "Usuario",

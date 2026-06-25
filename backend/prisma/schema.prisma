@@ -77,7 +77,9 @@ model Socio {
   tutor          Socio?         @relation("TutorMenor", fields: [tutorId], references: [id])
   tutelados      Socio[]        @relation("TutorMenor")
 
-  gruposFamiliares GrupoFamiliarMiembro[]
+  gruposFamiliares       GrupoFamiliarMiembro[]
+  divisionesPorTemporada SocioDivisionTemporada[]
+  subcomisiones          SubcomisionMiembro[]
 }
 
 enum TipoGrupoFamiliar {
@@ -110,4 +112,75 @@ model Empleado {
   area      AreaOperativa
 
   usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+enum Deporte {
+  RUGBY
+  HOCKEY
+}
+
+enum NivelDivision {
+  INFANTILES
+  JUVENILES
+  PLANTEL_SUPERIOR
+}
+
+enum TiraHockey {
+  A
+  B
+  C
+}
+
+model Division {
+  id        String        @id @default(uuid())
+  deporte   Deporte
+  categoria String
+  nivel     NivelDivision
+  tira      TiraHockey?
+
+  asignaciones SocioDivisionTemporada[]
+
+  @@unique([deporte, categoria, tira])
+}
+
+model Temporada {
+  id   String @id @default(uuid())
+  anio Int    @unique
+
+  asignaciones SocioDivisionTemporada[]
+}
+
+model SocioDivisionTemporada {
+  id              String   @id @default(uuid())
+  socioId         String
+  divisionId      String
+  temporadaId     String
+  fechaAsignacion DateTime @default(now())
+
+  socio     Socio     @relation(fields: [socioId], references: [id])
+  division  Division  @relation(fields: [divisionId], references: [id])
+  temporada Temporada @relation(fields: [temporadaId], references: [id])
+
+  @@unique([socioId, divisionId, temporadaId])
+}
+
+model Subcomision {
+  id          String  @id @default(uuid())
+  nombre      String  @unique
+  descripcion String?
+  activa      Boolean @default(true)
+
+  miembros    SubcomisionMiembro[]
+}
+
+model SubcomisionMiembro {
+  id            String   @id @default(uuid())
+  subcomisionId String
+  socioId       String
+  fechaAlta     DateTime @default(now())
+
+  subcomision Subcomision @relation(fields: [subcomisionId], references: [id])
+  socio       Socio       @relation(fields: [socioId], references: [id])
+
+  @@unique([subcomisionId, socioId])
 }
