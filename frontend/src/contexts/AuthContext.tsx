@@ -44,7 +44,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await client.get<{ usuario: Usuario }>('/auth/me');
       setUsuario(response.data.usuario);
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to restore session');
       setUsuario(null);
     } finally {
       setIsLoading(false);
