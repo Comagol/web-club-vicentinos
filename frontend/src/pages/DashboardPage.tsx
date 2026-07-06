@@ -11,7 +11,7 @@ export const DashboardPage: React.FC = () => {
       await logout();
       navigate('/login');
     } catch (err) {
-      console.error('Logout failed:', err);
+      // Logout error already handled by context
     }
   };
 

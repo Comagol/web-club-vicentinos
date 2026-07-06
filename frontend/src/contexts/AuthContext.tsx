@@ -18,10 +18,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         password,
       });
       setUsuario(response.data.usuario);
+      setIsLoading(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
       setIsLoading(false);
+      throw err;
     }
   }, []);
 
