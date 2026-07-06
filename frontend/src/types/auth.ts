@@ -9,8 +9,8 @@
  * Authenticated user data
  * Mirrors the AccessPayload from backend JWT tokens
  */
-export interface User {
-  sub: string;
+export interface Usuario {
+  id: string;
   email: string;
   roles: string[];
 }
@@ -18,7 +18,7 @@ export interface User {
 /**
  * Login request credentials
  */
-export interface LoginCredentials {
+export interface LoginRequest {
   email: string;
   password: string;
 }
@@ -27,7 +27,7 @@ export interface LoginCredentials {
  * Login API response
  */
 export interface LoginResponse {
-  usuario: User;
+  usuario: Usuario;
 }
 
 /**
@@ -46,7 +46,7 @@ export interface AuthApiResponse<T> {
  * Session/Auth state for context provider
  */
 export interface AuthSession {
-  user: User | null;
+  usuario: Usuario | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -58,5 +58,5 @@ export interface AuthSession {
 export interface AuthContextType extends AuthSession {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  refresh: () => Promise<void>;
+  restoreSession: () => Promise<void>;
 }
