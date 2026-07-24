@@ -34,14 +34,14 @@ const badgeStyles: Record<BadgeVariant, { bg: string; text: string; dot: string 
     dot: 'bg-neutral-500',
   },
   rugby: {
-    bg: 'bg-purple-100',
-    text: 'text-purple-700',
-    dot: 'bg-purple-700',
+    bg: 'bg-navy-50',
+    text: 'text-navy-800',
+    dot: 'bg-navy-800',
   },
   hockey: {
-    bg: 'bg-pink-100',
-    text: 'text-pink-700',
-    dot: 'bg-pink-700',
+    bg: 'bg-gold-50',
+    text: 'text-gold-700',
+    dot: 'bg-gold-700',
   },
 }
 
