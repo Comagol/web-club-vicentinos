@@ -13,7 +13,7 @@ const NAV_LINKS = [
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { usuario, isAuthenticated } = useAuth();
+  const { usuario, isAuthenticated, logout, isLoading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (href: string): boolean => {
@@ -22,6 +22,11 @@ export const Navbar: React.FC = () => {
 
   const handleUserNameClick = () => {
     navigate('/dashboard');
+    setMobileMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
     setMobileMenuOpen(false);
   };
 
@@ -61,12 +66,21 @@ export const Navbar: React.FC = () => {
         {/* Auth Section (Desktop) */}
         <div className="hidden sm:flex items-center gap-4">
           {isAuthenticated && usuario ? (
-            <button
-              onClick={handleUserNameClick}
-              className="px-4 py-2 text-sm font-500 text-navy-800 hover:text-navy-600"
-            >
-              {usuario.email || usuario.email}
-            </button>
+            <>
+              <button
+                onClick={handleUserNameClick}
+                className="px-4 py-2 text-sm font-500 text-navy-800 hover:text-navy-600"
+              >
+                {usuario.email || usuario.email}
+              </button>
+              <button
+                onClick={handleLogout}
+                disabled={isLoading}
+                className="px-4 py-2 text-sm font-500 text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isLoading ? 'Cerrando...' : 'Cerrar sesión'}
+              </button>
+            </>
           ) : (
             <button
               onClick={() => navigate('/login')}
@@ -104,17 +118,26 @@ export const Navbar: React.FC = () => {
               {link.label}
             </a>
           ))}
-          <div className="border-t border-gray-300 pt-4">
+          <div className="border-t border-gray-300 pt-4 space-y-2">
             {isAuthenticated && usuario ? (
-              <button
-                onClick={() => {
-                  navigate('/dashboard');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left text-sm font-500 text-navy-800"
-              >
-                Mi Cuenta ({usuario.email || usuario.email})
-              </button>
+              <>
+                <button
+                  onClick={() => {
+                    navigate('/dashboard');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left text-sm font-500 text-navy-800"
+                >
+                  Mi Cuenta ({usuario.email || usuario.email})
+                </button>
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoading}
+                  className="w-full text-left text-sm font-500 text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isLoading ? 'Cerrando...' : 'Cerrar sesión'}
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => {
