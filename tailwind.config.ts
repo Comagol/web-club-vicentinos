@@ -43,27 +43,38 @@ const config: Config = {
         // Estados semánticos
         success: {
           DEFAULT: '#16A34A',
-          light:   '#F0FDF4',
+          bg:      '#F0FDF4',
           border:  '#86EFAC',
           text:    '#15803D',
         },
         danger: {
           DEFAULT: '#DC2626',
-          light:   '#FEF2F2',
+          bg:      '#FEF2F2',
           border:  '#FCA5A5',
           text:    '#B91C1C',
         },
         warning: {
           DEFAULT: '#D97706',
-          light:   '#FFFBEB',
+          bg:      '#FFFBEB',
           border:  '#FDE68A',
           text:    '#B45309',
         },
         info: {
           DEFAULT: '#2563EB',
-          light:   '#EFF6FF',
+          bg:      '#EFF6FF',
           border:  '#BFDBFE',
           text:    '#1D4ED8',
+        },
+        // Colores deportivos
+        purple: {
+          50:  '#EDE9FE',
+          200: '#E9D5FF',
+          700: '#6D28D9',
+        },
+        pink: {
+          50:  '#FCE7F3',
+          200: '#FBCFE8',
+          700: '#9D174D',
         },
       },
 
@@ -144,10 +155,10 @@ export default config
 //  border-neutral-300 text-neutral-500 → btn ghost
 //
 //  BADGES
-//  bg-success-light text-success-text   → cuota al día
-//  bg-danger-light text-danger-text     → cuota vencida
-//  bg-warning-light text-warning-text   → advertencia
-//  bg-info-light text-info-text         → información
+//  bg-success-bg text-success-text   → cuota al día
+//  bg-danger-bg text-danger-text     → cuota vencida
+//  bg-warning-bg text-warning-text   → advertencia
+//  bg-info-bg text-info-text         → información
 //
 //  CARDS
 //  bg-white border border-neutral-300 rounded-card p-lg

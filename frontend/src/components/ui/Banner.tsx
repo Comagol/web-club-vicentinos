@@ -11,22 +11,22 @@ interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const bannerStyles: Record<BannerType, { bg: string; text: string; border: string }> = {
   success: {
-    bg: 'bg-success-light',
+    bg: 'bg-success-bg',
     text: 'text-success-text',
     border: 'border-success-border',
   },
   danger: {
-    bg: 'bg-danger-light',
+    bg: 'bg-danger-bg',
     text: 'text-danger-text',
     border: 'border-danger-border',
   },
   warning: {
-    bg: 'bg-warning-light',
+    bg: 'bg-warning-bg',
     text: 'text-warning-text',
     border: 'border-warning-border',
   },
   info: {
-    bg: 'bg-info-light',
+    bg: 'bg-info-bg',
     text: 'text-info-text',
     border: 'border-info-border',
   },

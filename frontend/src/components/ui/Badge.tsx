@@ -9,22 +9,22 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const badgeStyles: Record<BadgeVariant, { bg: string; text: string; dot: string }> = {
   active: {
-    bg: 'bg-success-light',
+    bg: 'bg-success-bg',
     text: 'text-success-text',
     dot: 'bg-success-text',
   },
   inactive: {
-    bg: 'bg-danger-light',
+    bg: 'bg-danger-bg',
     text: 'text-danger-text',
     dot: 'bg-danger-text',
   },
   pending: {
-    bg: 'bg-warning-light',
+    bg: 'bg-warning-bg',
     text: 'text-warning-text',
     dot: 'bg-warning-text',
   },
   info: {
-    bg: 'bg-info-light',
+    bg: 'bg-info-bg',
     text: 'text-info-text',
     dot: 'bg-info-text',
   },
@@ -34,14 +34,14 @@ const badgeStyles: Record<BadgeVariant, { bg: string; text: string; dot: string 
     dot: 'bg-neutral-500',
   },
   rugby: {
-    bg: 'bg-navy-50',
-    text: 'text-navy-800',
-    dot: 'bg-navy-800',
+    bg: 'bg-purple-50',
+    text: 'text-purple-700',
+    dot: 'bg-purple-700',
   },
   hockey: {
-    bg: 'bg-gold-50',
-    text: 'text-gold-700',
-    dot: 'bg-gold-700',
+    bg: 'bg-pink-50',
+    text: 'text-pink-700',
+    dot: 'bg-pink-700',
   },
 }
 

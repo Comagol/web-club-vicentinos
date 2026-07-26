@@ -18,11 +18,11 @@ interface ModalProps {
 const getActionButtonStyles = (variant?: string): string => {
   switch (variant) {
     case 'danger':
-      return 'bg-danger text-white hover:opacity-88'
+      return 'bg-danger text-white hover:opacity-90'
     case 'ghost':
-      return 'border-[0.5px] border-neutral-300 text-neutral-700 hover:opacity-88'
+      return 'border-[0.5px] border-neutral-300 text-neutral-700 hover:opacity-90'
     default: // primary
-      return 'bg-navy-800 text-white hover:opacity-88'
+      return 'bg-navy-800 text-white hover:opacity-90'
   }
 }
 
@@ -67,7 +67,7 @@ export const Modal: React.FC<ModalProps> = ({
             </h2>
             <button
               onClick={onClose}
-              className="p-0 hover:opacity-88 transition-opacity"
+              className="p-0 hover:opacity-90 transition-opacity"
               aria-label="Close modal"
             >
               <X size={20} className="text-neutral-700" />
@@ -84,7 +84,7 @@ export const Modal: React.FC<ModalProps> = ({
                 <button
                   key={index}
                   onClick={action.onClick}
-                  className={`h-10 px-4 rounded-btn font-medium text-body-sm transition-all active:scale-97 ${getActionButtonStyles(
+                  className={`h-10 px-4 rounded-btn font-medium text-body-sm transition-all active:scale-95 ${getActionButtonStyles(
                     action.variant
                   )}`}
                 >
