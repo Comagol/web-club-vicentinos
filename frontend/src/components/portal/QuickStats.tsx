@@ -77,7 +77,7 @@ export const QuickStats: React.FC = () => {
   return (
     <div className="mb-8">
       <h2 className="text-h2 font-600 text-navy-800 mb-4">Estado General</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, idx) => (
           <StatCard key={idx} {...stat} />
         ))}
