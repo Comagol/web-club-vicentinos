@@ -5,6 +5,7 @@ import { useAuth } from './hooks/useAuth';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
+import { PasswordResetPage } from './pages/PasswordResetPage';
 import { NewsPage } from './pages/NewsPage';
 import { TeamsPage } from './pages/TeamsPage';
 import { BoutiquePage } from './pages/BoutiquePage';
@@ -34,6 +35,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/teams" element={<TeamsPage />} />
       <Route path="/boutique" element={<BoutiquePage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/password-reset" element={<PasswordResetPage />} />
 
       {/* Protected Routes */}
       <Route
