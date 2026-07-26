@@ -11,7 +11,7 @@ import { TeamsPage } from './pages/TeamsPage';
 import { BoutiquePage } from './pages/BoutiquePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
-import { PortalDashboard } from './pages/portal/PortalDashboard';
+import { PortalHomePage } from './pages/portal/PortalHomePage';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -53,7 +53,7 @@ const AppRoutes: React.FC = () => {
         path="/portal"
         element={
           <ProtectedRoute>
-            <PortalDashboard />
+            <PortalHomePage />
           </ProtectedRoute>
         }
       />
