@@ -1,5 +1,6 @@
 import React, { createContext, useState, useCallback, ReactNode } from 'react';
 import { AuthContextType, Usuario, PasswordResetResult } from '../types/auth';
+import { ApiResponse } from '../types/api';
 import client from '../api/client';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -13,11 +14,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     setError(null);
     try {
-      const response = await client.post<{ usuario: Usuario }>('/auth/login', {
+      const response = await client.post<ApiResponse<{ usuario: Usuario; token: string }>>('/auth/login', {
         email,
         password,
       });
-      setUsuario(response.data.usuario);
+      // Token is automatically extracted and stored by API client interceptor
+      // We just need to extract and set the usuario
+      setUsuario(response.data.data.usuario);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
@@ -46,10 +49,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     setError(null);
     try {
-      const response = await client.get<{ usuario: Usuario }>('/auth/me');
-      setUsuario(response.data.usuario);
+      // Check localStorage for token FIRST before calling API
+      const token = localStorage.getItem('authToken');
+
+      if (!token) {
+        // No token exists - user is not authenticated
+        setUsuario(null);
+        return;
+      }
+
+      // Token exists - try to restore session via /auth/me
+      // API client will automatically inject the token in the Authorization header
+      const response = await client.get<ApiResponse<Usuario>>('/auth/me');
+      setUsuario(response.data.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to restore session');
+      // On error during restore, clear usuario but don't persist the error
+      // (restore is automatic on app load, so we don't want to show error UI)
+      // Note: A1's 401 interceptor already clears the token and redirects to /login
       setUsuario(null);
     } finally {
       setIsLoading(false);
