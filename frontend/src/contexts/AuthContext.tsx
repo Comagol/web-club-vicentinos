@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback, ReactNode } from 'react';
-import { AuthContextType, Usuario } from '../types/auth';
+import { AuthContextType, Usuario, PasswordResetResult } from '../types/auth';
 import client from '../api/client';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -52,6 +52,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
+  const requestPasswordReset = useCallback(async (email: string): Promise<PasswordResetResult> => {
+    setError(null);
+    try {
+      await client.post('/auth/password-reset-request', { email });
+      return { success: true };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to request password reset';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  }, []);
+
+  const resetPassword = useCallback(async (token: string, newPassword: string): Promise<PasswordResetResult> => {
+    setError(null);
+    try {
+      await client.post('/auth/password-reset', { token, newPassword });
+      return { success: true };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to reset password';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  }, []);
+
   const value: AuthContextType = {
     usuario,
     isLoading,
@@ -60,6 +84,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     login,
     logout,
     restoreSession,
+    requestPasswordReset,
+    resetPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

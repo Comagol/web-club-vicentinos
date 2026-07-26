@@ -53,10 +53,20 @@ export interface AuthSession {
 }
 
 /**
+ * Password reset result
+ */
+export interface PasswordResetResult {
+  success: boolean;
+  error?: string;
+}
+
+/**
  * Auth context value
  */
 export interface AuthContextType extends AuthSession {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   restoreSession: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<PasswordResetResult>;
+  resetPassword: (token: string, newPassword: string) => Promise<PasswordResetResult>;
 }
