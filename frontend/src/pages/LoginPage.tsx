@@ -1,55 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import React, { useState } from 'react'
+import { LoginForm } from '../components/auth/LoginForm'
+import { ForgotPasswordModal } from '../components/auth/ForgotPasswordModal'
 
 export const LoginPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { login, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const handleOpenForgotPassword = () => {
+    setIsForgotPasswordOpen(true)
+  }
 
-    try {
-      await login(email, password);
-      navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
-    }
-  };
+  const handleCloseForgotPassword = () => {
+    setIsForgotPasswordOpen(false)
+  }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto' }}>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isLoading}
-          />
+    <div 
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{
+        background: 'linear-gradient(to bottom, #1B3A6B, #0F2347)'
+      }}
+    >
+      <div className="w-full max-w-[500px]">
+        <div className="text-center mb-2xl">
+          <h1 className="text-h1 text-white font-bold mb-md">
+            Club Vicentinos
+          </h1>
+          <p className="text-body text-neutral-300">
+            Portal de socios
+          </p>
         </div>
-        <div style={{ marginBottom: '15px' }}>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Login'}
-        </button>
-      </form>
+
+        <LoginForm onForgotPassword={handleOpenForgotPassword} />
+
+        <ForgotPasswordModal
+          isOpen={isForgotPasswordOpen}
+          onClose={handleCloseForgotPassword}
+        />
+      </div>
     </div>
-  );
-};
+  )
+}
