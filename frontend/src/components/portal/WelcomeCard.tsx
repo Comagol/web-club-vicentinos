@@ -1,13 +1,16 @@
 import React from 'react';
 import { User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { useAuth } from '../../hooks/useAuth';
 
 export const WelcomeCard: React.FC = () => {
   const { usuario } = useAuth();
+  const navigate = useNavigate();
 
   // Extract name from email or use email as fallback
+  // TODO: Replace email split with proper `nombre` field from backend once Usuario interface is updated
   const displayName = usuario?.email?.split('@')[0] || 'Miembro';
   const capitalizedName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
 
@@ -26,7 +29,7 @@ export const WelcomeCard: React.FC = () => {
               <Button
                 variant="gold"
                 size="md"
-                onClick={() => window.location.href = '/portal/membership'}
+                onClick={() => navigate('/portal/membership')}
               >
                 Ver Mi Membresía
               </Button>
@@ -34,7 +37,7 @@ export const WelcomeCard: React.FC = () => {
                 variant="outline"
                 size="md"
                 className="border-white text-white hover:bg-white hover:text-navy-800"
-                onClick={() => window.location.href = '/portal/profile'}
+                onClick={() => navigate('/portal/profile')}
               >
                 Mi Perfil
               </Button>
