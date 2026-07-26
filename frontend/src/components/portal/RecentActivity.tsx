@@ -8,7 +8,6 @@ interface ActivityItem {
   description: string;
   date: string;
   type: 'payment' | 'carnet' | 'event' | 'general';
-  icon?: React.ReactNode;
 }
 
 const getActivityIcon = (type: string) => {
@@ -87,12 +86,10 @@ export const RecentActivity: React.FC = () => {
 
       <Card>
         <div className="divide-y divide-gray-100">
-          {activities.map((activity, idx) => (
+          {activities.map((activity) => (
             <div
               key={activity.id}
-              className={`p-lg flex gap-4 hover:bg-gray-50 transition-colors ${
-                idx === 0 ? '' : ''
-              }`}
+              className="p-lg flex gap-4 hover:bg-gray-50 transition-colors"
             >
               <div className="flex-shrink-0 pt-1">
                 {getActivityIcon(activity.type)}
