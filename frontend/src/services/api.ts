@@ -8,7 +8,7 @@ import {
 // AUTH
 export const authService = {
   login: (email: string, password: string) =>
-    client.post<ApiResponse<{ usuario: Socio }>>('/auth/login', { email, password }),
+    client.post<ApiResponse<{ usuario: Socio; token: string }>>('/auth/login', { email, password }),
   logout: () => client.post<ApiResponse<null>>('/auth/logout'),
   me: () => client.get<ApiResponse<Socio>>('/auth/me'),
   refreshToken: () => client.post<ApiResponse<{ token: string }>>('/auth/refresh'),

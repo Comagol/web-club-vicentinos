@@ -30,9 +30,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     try {
       await client.post('/auth/logout');
+      localStorage.removeItem('authToken');
       setUsuario(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Logout failed');
+      // Clear token even if logout API call fails
+      localStorage.removeItem('authToken');
+      setUsuario(null);
     } finally {
       setIsLoading(false);
     }
