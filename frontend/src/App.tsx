@@ -12,6 +12,7 @@ import { BoutiquePage } from './pages/BoutiquePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PortalHomePage } from './pages/portal/PortalHomePage';
+import { ProfilePage } from './pages/portal/ProfilePage';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -85,7 +86,7 @@ const AppRoutes: React.FC = () => {
         path="/portal/profile"
         element={
           <ProtectedRoute>
-            <div>Profile Page (Coming Soon)</div>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
