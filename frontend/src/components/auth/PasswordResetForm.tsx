@@ -36,7 +36,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ token }) =
     setErrorMessage(null)
 
     if (!token) {
-      setErrorMessage('Invalid reset link')
+      setErrorMessage('Enlace de restablecimiento inválido')
       return
     }
 
@@ -80,7 +80,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ token }) =
     return (
       <div className="w-full max-w-[500px]">
         <Banner type="danger" className="mb-lg">
-          Invalid reset link. Please request a new password reset.
+          Enlace de restablecimiento inválido. Por favor, solicita un nuevo restablecimiento de contraseña.
         </Banner>
       </div>
     )
