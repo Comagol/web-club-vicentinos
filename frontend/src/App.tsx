@@ -13,6 +13,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PortalHomePage } from './pages/portal/PortalHomePage';
 import { ProfilePage } from './pages/portal/ProfilePage';
+import { FeesPage } from './pages/portal/FeesPage';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -75,10 +76,18 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/portal/finances"
+        path="/portal/cuotas"
         element={
           <ProtectedRoute>
-            <div>Finances Page (Coming Soon)</div>
+            <FeesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/portal/fees"
+        element={
+          <ProtectedRoute>
+            <FeesPage />
           </ProtectedRoute>
         }
       />
