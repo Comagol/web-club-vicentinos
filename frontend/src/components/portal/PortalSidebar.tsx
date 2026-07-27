@@ -7,7 +7,7 @@ const PORTAL_LINKS = [
   { label: 'Inicio', href: '/portal', icon: Home },
   { label: 'Membresía', href: '/portal/membership', icon: CreditCard },
   { label: 'Calendario', href: '/portal/calendar', icon: Calendar },
-  { label: 'Finanzas', href: '/portal/finances', icon: DollarSign },
+  { label: 'Cuotas', href: '/portal/cuotas', icon: DollarSign },
   { label: 'Perfil', href: '/portal/profile', icon: User },
 ];
 
