@@ -45,6 +45,13 @@ export const useCarnetPublic = (carnetId: string | undefined, ttlMs: number = 10
       const response = await carnetService.getCarnetPublic(carnetId);
       const carnetData = response.data.data;
 
+      // Check if carnet is disabled
+      if (carnetData.estado === 'inhabilitado') {
+        setError('Carnet inhabilitado');
+        setData(null);
+        return;
+      }
+
       // Update cache
       cacheRef.current = {
         data: carnetData,
@@ -98,8 +105,8 @@ export const useCarnetPublic = (carnetId: string | undefined, ttlMs: number = 10
     fetchData();
   }, [carnetId, isCacheValid, fetchData]);
 
-  // isValid: true if carnet is habilitado
-  const isValid = data?.estado === 'habilitado';
+  // isValid: true if carnet exists and is habilitado (no error)
+  const isValid = data !== null && error === null;
 
   return { data, isLoading, error, isValid, refetch };
 };

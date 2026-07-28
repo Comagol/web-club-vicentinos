@@ -50,14 +50,6 @@ describe('CarnetVerificationView', () => {
     expect(screen.getByText('Vencimiento')).toBeInTheDocument();
   });
 
-  it('should display carnet ID', () => {
-    render(<CarnetVerificationView carnet={mockCarnet} />);
-
-    expect(screen.getByText('ID Carnet')).toBeInTheDocument();
-    // ID should be truncated to first 8 chars
-    expect(screen.getByText('carnet-1...')).toBeInTheDocument();
-  });
-
   it('should display success message with verification time', () => {
     render(<CarnetVerificationView carnet={mockCarnet} />);
 
@@ -102,5 +94,13 @@ describe('CarnetVerificationView', () => {
     // Check for success check mark
     const successIndicator = screen.getByText('Carnet Verificado');
     expect(successIndicator).toBeInTheDocument();
+  });
+
+  it('should not display sensitive information (carnet ID)', () => {
+    render(<CarnetVerificationView carnet={mockCarnet} />);
+
+    // Ensure carnet ID is not shown (should not find it)
+    expect(screen.queryByText(/ID Carnet/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/carnet-1/)).not.toBeInTheDocument();
   });
 });

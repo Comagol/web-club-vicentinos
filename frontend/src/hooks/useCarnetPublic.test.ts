@@ -72,7 +72,7 @@ describe('useCarnetPublic', () => {
     expect(result.current.isValid).toBe(false);
   });
 
-  it('should set isValid to false for inhabilitado status', async () => {
+  it('should set error for inhabilitado carnet status', async () => {
     const mockCarnet = {
       id: 'carnet-123',
       socioId: 'socio-456',
@@ -93,7 +93,9 @@ describe('useCarnetPublic', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(result.current.data).toEqual(mockCarnet);
+    // When carnet is inhabilitado, data should be null and error should be set
+    expect(result.current.data).toBeNull();
+    expect(result.current.error).toBe('Carnet inhabilitado');
     expect(result.current.isValid).toBe(false);
   });
 

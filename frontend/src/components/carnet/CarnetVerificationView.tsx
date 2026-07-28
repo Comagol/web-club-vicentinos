@@ -92,8 +92,8 @@ export const CarnetVerificationView: React.FC<CarnetVerificationViewProps> = ({
 
               {/* Badges - Discipline and Category */}
               <div className="flex flex-wrap gap-xs">
-                {/* These would need to be added to Carnet interface if available from API */}
-                {/* For now, showing basic info available in public carnet */}
+                {/* Note: Public API response does not include disciplina, categoria, or estadoMembresia fields.
+                    These would require API enhancement to be displayed here. */}
               </div>
             </div>
           </div>
@@ -115,14 +115,6 @@ export const CarnetVerificationView: React.FC<CarnetVerificationViewProps> = ({
               <span className="text-label text-neutral-300">Vencimiento</span>
               <span className="text-body-small font-600 text-gold-300">
                 {formatDate(carnet.fechaVencimiento)}
-              </span>
-            </div>
-
-            {/* Carnet ID */}
-            <div className="flex items-center justify-between pt-md border-t border-navy-700">
-              <span className="text-label text-neutral-300">ID Carnet</span>
-              <span className="text-body-small font-mono text-gold-300">
-                {carnet.id.slice(0, 8)}...
               </span>
             </div>
           </div>

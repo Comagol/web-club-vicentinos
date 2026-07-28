@@ -183,9 +183,9 @@ describe('CarnetVerificationPage', () => {
     expect(screen.getByText(/Escanea o accede mediante enlace para verificar un carnet/)).toBeInTheDocument();
   });
 
-  it('should show inhabilitado carnet error state', () => {
+  it('should show error state for inhabilitado carnet', () => {
     vi.mocked(useCarnetPublic).mockReturnValue({
-      data: { ...mockCarnet, estado: 'inhabilitado' },
+      data: null,
       isLoading: false,
       error: 'Carnet inhabilitado',
       isValid: false,
