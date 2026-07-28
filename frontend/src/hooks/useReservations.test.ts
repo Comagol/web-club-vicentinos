@@ -59,6 +59,9 @@ describe('useReservations', () => {
       espacioId: 'space-1',
       fechaInicio: '2026-08-01',
       fechaFin: '2026-08-01',
+      horaInicio: '08:00',
+      horaFin: '09:00',
+      notas: 'Test note',
       estado: 'pendiente' as const,
       createdAt: '2026-07-28T00:00:00Z',
     };
@@ -77,10 +80,15 @@ describe('useReservations', () => {
       espacioId: 'space-1',
       fechaInicio: '2026-08-01',
       fechaFin: '2026-08-01',
+      horaInicio: '08:00',
+      horaFin: '09:00',
+      notas: 'Test note',
       estado: 'pendiente',
     });
 
     expect(createdReserva.id).toBe('reserva-123');
+    expect(createdReserva.horaInicio).toBe('08:00');
+    expect(createdReserva.horaFin).toBe('09:00');
   });
 
   it('handles error when fetching espacios', async () => {

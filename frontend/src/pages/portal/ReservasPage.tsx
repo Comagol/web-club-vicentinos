@@ -67,6 +67,9 @@ export const ReservasPage: React.FC = () => {
         espacioId: formData.espacioId,
         fechaInicio: formData.fechaInicio,
         fechaFin: formData.fechaInicio, // Same day reservation
+        horaInicio: formData.horaInicio,
+        horaFin: formData.horaFin,
+        notas: formData.notas,
         estado: 'pendiente',
       };
 
@@ -78,6 +81,7 @@ export const ReservasPage: React.FC = () => {
       setSelectedEspacioId(null);
       setSelectedStartTime(null);
       setSelectedEndTime(null);
+      setSuccessMessage(null);
 
       // Redirect after 2 seconds
       setTimeout(() => {
@@ -191,6 +195,8 @@ export const ReservasPage: React.FC = () => {
               selectedDate={selectedDate}
               selectedStartTime={selectedStartTime}
               selectedEndTime={selectedEndTime}
+              selectedEspacioId={selectedEspacioId}
+              disponibilidad={disponibilidad}
               onSubmit={handleSubmit}
               loading={loading}
               error={error}

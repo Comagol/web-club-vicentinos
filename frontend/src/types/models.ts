@@ -42,6 +42,9 @@ export interface Reserva {
   espacioId: string;
   fechaInicio: string;
   fechaFin: string;
+  horaInicio: string; // "08:00" format
+  horaFin: string;    // "08:30" format
+  notas?: string;     // Optional additional notes
   estado: 'pendiente' | 'aprobado' | 'rechazado';
   notaRechazo?: string;
   createdAt: string;

@@ -10,6 +10,8 @@ interface ReservationFormProps {
   selectedDate: string | null;
   selectedStartTime: string | null;
   selectedEndTime: string | null;
+  selectedEspacioId: string | null;
+  disponibilidad: any;
   onSubmit: (data: FormData) => Promise<void>;
   loading: boolean;
   error: string | null;
@@ -32,12 +34,14 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
   selectedDate,
   selectedStartTime,
   selectedEndTime,
+  selectedEspacioId,
+  disponibilidad,
   onSubmit,
   loading,
   error,
 }) => {
   const [formData, setFormData] = useState<FormData>({
-    espacioId: '',
+    espacioId: selectedEspacioId || '',
     fechaInicio: selectedDate || '',
     horaInicio: selectedStartTime || '',
     horaFin: selectedEndTime || '',
@@ -47,15 +51,27 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
   const [localError, setLocalError] = useState<string | null>(null);
 
-  // Update form when selected values change
+  // Update form when selected values change (especially espacioId)
   React.useEffect(() => {
     setFormData((prev) => ({
       ...prev,
+      espacioId: selectedEspacioId || prev.espacioId,
       fechaInicio: selectedDate || prev.fechaInicio,
       horaInicio: selectedStartTime || prev.horaInicio,
       horaFin: selectedEndTime || prev.horaFin,
     }));
-  }, [selectedDate, selectedStartTime, selectedEndTime]);
+  }, [selectedDate, selectedStartTime, selectedEndTime, selectedEspacioId]);
+
+  const getAvailableSlots = (): string[] => {
+    if (!disponibilidad) return [];
+    if (Array.isArray(disponibilidad)) {
+      return disponibilidad;
+    }
+    if (disponibilidad.available && Array.isArray(disponibilidad.available)) {
+      return disponibilidad.available;
+    }
+    return [];
+  };
 
   const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = {};
@@ -66,6 +82,16 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 
     if (!formData.fechaInicio) {
       newErrors.fechaInicio = 'La fecha es requerida';
+    }
+
+    // Validate date is not in the past
+    if (formData.fechaInicio) {
+      const selectedDateObj = new Date(formData.fechaInicio);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDateObj < today) {
+        newErrors.fechaInicio = 'La fecha no puede ser en el pasado';
+      }
     }
 
     if (!formData.horaInicio) {
@@ -80,11 +106,17 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
       if (formData.horaInicio >= formData.horaFin) {
         newErrors.horaFin = 'La hora de fin debe ser mayor que la hora de inicio';
       }
+
+      // Validate that the selected time range is in the availability list
+      const availableSlots = getAvailableSlots();
+      if (availableSlots.length > 0 && !availableSlots.includes(formData.horaInicio)) {
+        newErrors.horaInicio = 'El horario seleccionado no está disponible';
+      }
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData]);
+  }, [formData, disponibilidad]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -136,29 +168,20 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             </Banner>
           )}
 
-          {/* Space Selection */}
+          {/* Space Selection - Read-only display */}
           <div>
-            <label htmlFor="espacioId" className="block text-label text-neutral-700 mb-md">
+            <label className="block text-label text-neutral-700 mb-md">
               Espacio *
             </label>
-            <select
-              id="espacioId"
-              name="espacioId"
-              value={formData.espacioId}
-              onChange={handleInputChange}
-              className={`w-full h-[38px] px-3 border-[0.5px] rounded-btn text-body font-normal transition-all duration-150 ${
-                errors.espacioId
-                  ? 'border-danger focus:border-danger focus:shadow-focus-danger'
-                  : 'border-neutral-300 focus:border-navy-800 focus:shadow-focus-navy'
-              } placeholder-neutral-500`}
-            >
-              <option value="">Selecciona un espacio</option>
-              {espacios.map((espacio) => (
-                <option key={espacio.id} value={espacio.id}>
-                  {espacio.nombre} (Cap. {espacio.capacidad})
-                </option>
-              ))}
-            </select>
+            {formData.espacioId ? (
+              <div className="w-full h-[38px] px-3 border-[0.5px] border-neutral-300 rounded-btn text-body font-normal flex items-center bg-gray-50 text-neutral-600">
+                {espacios.find((e) => e.id === formData.espacioId)?.nombre} (Cap. {espacios.find((e) => e.id === formData.espacioId)?.capacidad})
+              </div>
+            ) : (
+              <div className="w-full h-[38px] px-3 border-[0.5px] border-danger rounded-btn text-body font-normal flex items-center bg-gray-50 text-danger">
+                Por favor selecciona un espacio
+              </div>
+            )}
             {errors.espacioId && (
               <p className="text-caption text-danger mt-sm">{errors.espacioId}</p>
             )}

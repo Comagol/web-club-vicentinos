@@ -16,6 +16,8 @@ describe('ReservationForm', () => {
         selectedDate={null}
         selectedStartTime={null}
         selectedEndTime={null}
+        selectedEspacioId={null}
+        disponibilidad={null}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
@@ -29,7 +31,7 @@ describe('ReservationForm', () => {
     expect(screen.getByText('Notas (Opcional)')).toBeInTheDocument();
   });
 
-  it('displays espacio options', () => {
+  it('displays selected espacio in read-only format', () => {
     const mockOnSubmit = vi.fn();
     render(
       <ReservationForm
@@ -37,17 +39,15 @@ describe('ReservationForm', () => {
         selectedDate={null}
         selectedStartTime={null}
         selectedEndTime={null}
+        selectedEspacioId="1"
+        disponibilidad={null}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
       />
     );
 
-    const espacio1 = screen.getByText(/Salón A/);
-    const espacio2 = screen.getByText(/Salón B/);
-
-    expect(espacio1).toBeInTheDocument();
-    expect(espacio2).toBeInTheDocument();
+    expect(screen.getByText(/Salón A/)).toBeInTheDocument();
   });
 
   it('displays error message when provided', () => {
@@ -58,6 +58,8 @@ describe('ReservationForm', () => {
         selectedDate={null}
         selectedStartTime={null}
         selectedEndTime={null}
+        selectedEspacioId={null}
+        disponibilidad={null}
         onSubmit={mockOnSubmit}
         loading={false}
         error="Error fetching data"
@@ -75,6 +77,8 @@ describe('ReservationForm', () => {
         selectedDate="2026-08-01"
         selectedStartTime="08:00"
         selectedEndTime="09:00"
+        selectedEspacioId="1"
+        disponibilidad={['08:00', '08:30']}
         onSubmit={mockOnSubmit}
         loading={true}
         error={null}
@@ -93,6 +97,8 @@ describe('ReservationForm', () => {
         selectedDate={null}
         selectedStartTime={null}
         selectedEndTime={null}
+        selectedEspacioId={null}
+        disponibilidad={null}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
@@ -120,6 +126,8 @@ describe('ReservationForm', () => {
         selectedDate="2026-08-01"
         selectedStartTime="09:00"
         selectedEndTime="08:00"
+        selectedEspacioId="1"
+        disponibilidad={['09:00']}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
@@ -144,14 +152,13 @@ describe('ReservationForm', () => {
         selectedDate="2026-08-01"
         selectedStartTime="08:00"
         selectedEndTime="09:00"
+        selectedEspacioId="1"
+        disponibilidad={['08:00', '08:30']}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
       />
     );
-
-    const espacioSelect = screen.getByRole('combobox') as HTMLSelectElement;
-    fireEvent.change(espacioSelect, { target: { value: '1' } });
 
     const submitButton = screen.getByRole('button', { name: /Reservar Espacio/ });
     fireEvent.click(submitButton);
@@ -167,7 +174,7 @@ describe('ReservationForm', () => {
     expect(callData.horaFin).toBe('09:00');
   });
 
-  it('updates form fields when selected values change', () => {
+  it('syncs espacio from prop', () => {
     const mockOnSubmit = vi.fn();
     const { rerender } = render(
       <ReservationForm
@@ -175,61 +182,31 @@ describe('ReservationForm', () => {
         selectedDate="2026-08-01"
         selectedStartTime="08:00"
         selectedEndTime="09:00"
+        selectedEspacioId="1"
+        disponibilidad={['08:00']}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
       />
     );
 
-    const dateInputs = screen.getAllByDisplayValue('2026-08-01');
-    expect(dateInputs.length > 0).toBe(true);
+    expect(screen.getByText(/Salón A/)).toBeInTheDocument();
 
     rerender(
       <ReservationForm
         espacios={mockEspacios}
-        selectedDate="2026-08-02"
-        selectedStartTime="09:00"
-        selectedEndTime="10:00"
+        selectedDate="2026-08-01"
+        selectedStartTime="08:00"
+        selectedEndTime="09:00"
+        selectedEspacioId="2"
+        disponibilidad={['08:00']}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
       />
     );
 
-    const updatedInputs = screen.getAllByDisplayValue('2026-08-02');
-    expect(updatedInputs.length > 0).toBe(true);
-  });
-
-  it('clears error when user interacts with field', async () => {
-    const mockOnSubmit = vi.fn();
-    render(
-      <ReservationForm
-        espacios={mockEspacios}
-        selectedDate={null}
-        selectedStartTime={null}
-        selectedEndTime={null}
-        onSubmit={mockOnSubmit}
-        loading={false}
-        error={null}
-      />
-    );
-
-    // Submit to trigger validation
-    const submitButton = screen.getByRole('button', { name: /Reservar Espacio/ });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(screen.getByText(/El espacio es requerido/)).toBeInTheDocument();
-    });
-
-    // Change the espacio field
-    const espacioSelect = screen.getByRole('combobox');
-    fireEvent.change(espacioSelect, { target: { value: '1' } });
-
-    // Error for espacio field should be cleared
-    await waitFor(() => {
-      expect(screen.queryByText(/El espacio es requerido/)).not.toBeInTheDocument();
-    });
+    expect(screen.getByText(/Salón B/)).toBeInTheDocument();
   });
 
   it('accepts notes field', () => {
@@ -240,6 +217,8 @@ describe('ReservationForm', () => {
         selectedDate="2026-08-01"
         selectedStartTime="08:00"
         selectedEndTime="09:00"
+        selectedEspacioId="1"
+        disponibilidad={['08:00']}
         onSubmit={mockOnSubmit}
         loading={false}
         error={null}
@@ -248,5 +227,31 @@ describe('ReservationForm', () => {
 
     const notesField = screen.getByPlaceholderText(/Agregue cualquier comentario/);
     expect(notesField).toBeInTheDocument();
+  });
+
+  it('validates that time is in availability', async () => {
+    const mockOnSubmit = vi.fn();
+    render(
+      <ReservationForm
+        espacios={mockEspacios}
+        selectedDate="2026-08-01"
+        selectedStartTime="09:00"
+        selectedEndTime="10:00"
+        selectedEspacioId="1"
+        disponibilidad={['08:00', '08:30']}
+        onSubmit={mockOnSubmit}
+        loading={false}
+        error={null}
+      />
+    );
+
+    const submitButton = screen.getByRole('button', { name: /Reservar Espacio/ });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/El horario seleccionado no está disponible/)).toBeInTheDocument();
+    });
+
+    expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 });
