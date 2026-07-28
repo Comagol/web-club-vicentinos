@@ -16,6 +16,7 @@ import { ProfilePage } from './pages/portal/ProfilePage';
 import { FeesPage } from './pages/portal/FeesPage';
 import { CarnetPage } from './pages/portal/CarnetPage';
 import { ReservasPage } from './pages/portal/ReservasPage';
+import { ReservationListPage } from './pages/portal/ReservationListPage';
 import { CarnetVerificationPage } from './pages/CarnetVerificationPage';
 
 const AppRoutes: React.FC = () => {
@@ -117,6 +118,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <ReservasPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/portal/reservas/list"
+        element={
+          <ProtectedRoute>
+            <ReservationListPage />
           </ProtectedRoute>
         }
       />
