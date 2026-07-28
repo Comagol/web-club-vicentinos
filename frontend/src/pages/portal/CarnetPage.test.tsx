@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { CarnetPage } from './CarnetPage';
 import { useCarnet } from '../../hooks/useCarnet';
-import { useAuth } from '../../hooks/useAuth';
+import { useMemberProfile } from '../../hooks/useMemberProfile';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { Carnet, Socio } from '../../types/models';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
 
 vi.mock('../../hooks/useCarnet');
-vi.mock('../../hooks/useAuth');
+vi.mock('../../hooks/useMemberProfile');
 vi.mock('../../hooks/useRequireAuth');
 vi.mock('../../components/portal/PortalLayout', () => ({
   PortalLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -48,11 +48,14 @@ describe('CarnetPage', () => {
     const mockUseRequireAuth = useRequireAuth as any;
     mockUseRequireAuth.mockReturnValue({ isLoading: false });
 
-    const mockUseAuth = useAuth as any;
-    mockUseAuth.mockReturnValue({
-      usuario: mockMember,
-      isAuthenticated: true,
-      isLoading: false,
+    const mockUseMemberProfile = useMemberProfile as any;
+    mockUseMemberProfile.mockReturnValue({
+      profile: mockMember,
+      loading: false,
+      updating: false,
+      error: null,
+      updateProfile: vi.fn(),
+      refetch: vi.fn(),
     });
 
     const mockUseCarnet = useCarnet as any;
@@ -72,11 +75,14 @@ describe('CarnetPage', () => {
     const mockUseRequireAuth = useRequireAuth as any;
     mockUseRequireAuth.mockReturnValue({ isLoading: false });
 
-    const mockUseAuth = useAuth as any;
-    mockUseAuth.mockReturnValue({
-      usuario: mockMember,
-      isAuthenticated: true,
-      isLoading: false,
+    const mockUseMemberProfile = useMemberProfile as any;
+    mockUseMemberProfile.mockReturnValue({
+      profile: null,
+      loading: true,
+      updating: false,
+      error: null,
+      updateProfile: vi.fn(),
+      refetch: vi.fn(),
     });
 
     const mockUseCarnet = useCarnet as any;
@@ -96,11 +102,14 @@ describe('CarnetPage', () => {
     const mockUseRequireAuth = useRequireAuth as any;
     mockUseRequireAuth.mockReturnValue({ isLoading: false });
 
-    const mockUseAuth = useAuth as any;
-    mockUseAuth.mockReturnValue({
-      usuario: mockMember,
-      isAuthenticated: true,
-      isLoading: false,
+    const mockUseMemberProfile = useMemberProfile as any;
+    mockUseMemberProfile.mockReturnValue({
+      profile: null,
+      loading: false,
+      updating: false,
+      error: null,
+      updateProfile: vi.fn(),
+      refetch: vi.fn(),
     });
 
     const mockUseCarnet = useCarnet as any;
@@ -120,11 +129,14 @@ describe('CarnetPage', () => {
     const mockUseRequireAuth = useRequireAuth as any;
     mockUseRequireAuth.mockReturnValue({ isLoading: false });
 
-    const mockUseAuth = useAuth as any;
-    mockUseAuth.mockReturnValue({
-      usuario: mockMember,
-      isAuthenticated: true,
-      isLoading: false,
+    const mockUseMemberProfile = useMemberProfile as any;
+    mockUseMemberProfile.mockReturnValue({
+      profile: mockMember,
+      loading: false,
+      updating: false,
+      error: null,
+      updateProfile: vi.fn(),
+      refetch: vi.fn(),
     });
 
     const mockUseCarnet = useCarnet as any;

@@ -50,14 +50,27 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ carnetId }) =>
 
   return (
     <div className="flex flex-col items-center gap-md">
-      {/* QR Code - Responsive sizes */}
+      {/* QR Code - Responsive sizes (200px on mobile, 300px on desktop) */}
       <div className="p-sm bg-white rounded-md border border-neutral-300 shadow-sm flex justify-center">
-        <QRCodeSVG
-          value={verificationUrl}
-          size={200}
-          level="H"
-          includeMargin={true}
-        />
+        {/* Mobile QR Code: 200px x 200px (hidden on md+) */}
+        <div className="block md:hidden">
+          <QRCodeSVG
+            value={verificationUrl}
+            size={200}
+            level="H"
+            includeMargin={true}
+          />
+        </div>
+
+        {/* Desktop QR Code: 300px x 300px (hidden on sm) */}
+        <div className="hidden md:block">
+          <QRCodeSVG
+            value={verificationUrl}
+            size={300}
+            level="H"
+            includeMargin={true}
+          />
+        </div>
       </div>
 
       {/* Verification URL */}

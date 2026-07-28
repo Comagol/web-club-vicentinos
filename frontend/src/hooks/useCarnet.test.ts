@@ -1,11 +1,9 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { useCarnet } from './useCarnet';
 import { useAuth } from './useAuth';
-import { carnetService } from '../services/api';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
 
 vi.mock('./useAuth');
-vi.mock('../services/api');
 
 describe('useCarnet', () => {
   beforeEach(() => {

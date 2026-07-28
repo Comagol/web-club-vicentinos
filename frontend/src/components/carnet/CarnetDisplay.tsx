@@ -1,5 +1,4 @@
 import React from 'react';
-import { User } from 'lucide-react';
 import { Carnet, Socio } from '../../types/models';
 import { Badge } from '../ui/Badge';
 import { QRCodeGenerator } from './QRCodeGenerator';

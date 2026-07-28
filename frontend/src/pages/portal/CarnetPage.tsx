@@ -4,13 +4,15 @@ import { CarnetDisplay } from '../../components/carnet/CarnetDisplay';
 import { Banner } from '../../components/ui/Banner';
 import { Button } from '../../components/ui/Button';
 import { useCarnet } from '../../hooks/useCarnet';
-import { useAuth } from '../../hooks/useAuth';
+import { useMemberProfile } from '../../hooks/useMemberProfile';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
 
 export const CarnetPage: React.FC = () => {
   const { isLoading: authLoading } = useRequireAuth();
-  const { usuario } = useAuth();
-  const { data: carnet, loading, error, refetch } = useCarnet();
+  const { profile: member, loading: profileLoading } = useMemberProfile();
+  const { data: carnet, loading: carnetLoading, error, refetch } = useCarnet();
+
+  const isLoading = authLoading || profileLoading || carnetLoading;
 
   if (authLoading) {
     return (
@@ -36,7 +38,7 @@ export const CarnetPage: React.FC = () => {
         </div>
 
         {/* Loading State */}
-        {loading && !carnet && (
+        {isLoading && !carnet && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center space-y-md">
               <div className="inline-block">
@@ -69,12 +71,12 @@ export const CarnetPage: React.FC = () => {
         )}
 
         {/* Success State */}
-        {carnet && usuario && (
-          <CarnetDisplay carnet={carnet} member={usuario} />
+        {carnet && member && (
+          <CarnetDisplay carnet={carnet} member={member} />
         )}
 
         {/* No Data State */}
-        {!loading && !error && !carnet && (
+        {!isLoading && !error && !carnet && (
           <Banner type="warning">
             <div className="space-y-xs">
               <p className="font-600">Tu carnet digital no está disponible</p>

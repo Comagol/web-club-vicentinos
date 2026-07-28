@@ -56,7 +56,7 @@ describe('CarnetDisplay', () => {
   });
 
   it('displays carnet ID', () => {
-    const { container } = render(<CarnetDisplay carnet={mockCarnet} member={mockMember} />);
+    render(<CarnetDisplay carnet={mockCarnet} member={mockMember} />);
 
     // Get all elements with carnet-123 text and find the one in the footer
     const elements = screen.getAllByText('carnet-123');
@@ -70,12 +70,11 @@ describe('CarnetDisplay', () => {
   });
 
   it('renders QR code section', () => {
-    const { container } = render(<CarnetDisplay carnet={mockCarnet} member={mockMember} />);
+    render(<CarnetDisplay carnet={mockCarnet} member={mockMember} />);
 
     // Check for QR code section by finding h3 element with specific text
-    const qrHeadings = container.querySelectorAll('h3');
-    const hasQRHeading = Array.from(qrHeadings).some(h => h.textContent?.includes('Código de Verificación'));
-    expect(hasQRHeading).toBeTruthy();
+    const heading = screen.getByRole('heading', { name: /Código de Verificación/i });
+    expect(heading).toBeInTheDocument();
   });
 
   it('handles different discipline types', () => {

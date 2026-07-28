@@ -40,7 +40,7 @@ export const useCarnet = (ttlMs: number = 10 * 60 * 1000): UseCarnetReturn => {
 
     try {
       const response = await carnetService.getCarnet(usuario.id);
-      const carnetData = response.data;
+      const carnetData = response.data.data;
 
       // Update cache
       cacheRef.current = {
