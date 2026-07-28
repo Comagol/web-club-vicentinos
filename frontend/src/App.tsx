@@ -15,6 +15,7 @@ import { PortalHomePage } from './pages/portal/PortalHomePage';
 import { ProfilePage } from './pages/portal/ProfilePage';
 import { FeesPage } from './pages/portal/FeesPage';
 
+import { CarnetPage } from './pages/portal/CarnetPage';
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
 
@@ -100,6 +101,14 @@ const AppRoutes: React.FC = () => {
         }
       />
 
+      <Route
+        path="/portal/carnet"
+        element={
+          <ProtectedRoute>
+            <CarnetPage />
+          </ProtectedRoute>
+        }
+      />
       {/* Not Found */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
