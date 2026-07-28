@@ -1,13 +1,25 @@
 import { useState, useCallback, useEffect } from 'react';
 import { reservaService } from '../services/api';
-import { Reserva } from '../types/models';
+import { Reserva, Espacio } from '../types/models';
 import { useAuth } from './useAuth';
 
 export const useReservationList = () => {
   const { usuario } = useAuth();
   const [reservations, setReservations] = useState<Reserva[]>([]);
+  const [espacios, setEspacios] = useState<Espacio[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchEspacios = useCallback(async () => {
+    try {
+      const response = await reservaService.getEspacios();
+      const data = response.data?.data;
+      setEspacios(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to fetch espacios:', err);
+      setEspacios([]);
+    }
+  }, []);
 
   const fetchReservations = useCallback(async () => {
     if (!usuario?.id) return;
@@ -57,11 +69,13 @@ export const useReservationList = () => {
   }, [fetchReservations]);
 
   useEffect(() => {
+    fetchEspacios();
     fetchReservations();
-  }, [fetchReservations]);
+  }, [fetchEspacios, fetchReservations]);
 
   return {
     reservations,
+    espacios,
     isLoading,
     error,
     refetch,

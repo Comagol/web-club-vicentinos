@@ -9,22 +9,10 @@ import { useReservationList } from '../../hooks/useReservationList';
 type SortOption = 'newest' | 'oldest';
 type StatusFilter = 'all' | 'pendiente' | 'aprobado' | 'rechazado';
 
-// Mock espacios data - ideally would come from API
-const mockEspacios: Record<string, { nombre: string; capacidad: number }> = {
-  'espacio-1': { nombre: 'Salón Principal', capacidad: 100 },
-  'espacio-2': { nombre: 'Cancha de Rugby', capacidad: 50 },
-  'espacio-3': { nombre: 'Cancha de Hockey', capacidad: 30 },
-  'espacio-4': { nombre: 'Sala de Reuniones', capacidad: 20 },
-};
-
-const getEspacioInfo = (espacioId: string) => {
-  return mockEspacios[espacioId] || { nombre: 'Espacio Desconocido', capacidad: 0 };
-};
-
 export const ReservationListPage: React.FC = () => {
   const { isLoading: authLoading } = useRequireAuth();
   const navigate = useNavigate();
-  const { reservations, isLoading, error, cancelReservation } = useReservationList();
+  const { reservations, espacios, isLoading, error, cancelReservation } = useReservationList();
 
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [filterBy, setFilterBy] = useState<StatusFilter>('all');
@@ -203,13 +191,13 @@ export const ReservationListPage: React.FC = () => {
               {filteredReservations.length} reserva{filteredReservations.length > 1 ? 's' : ''}
             </div>
             {filteredReservations.map((reserva) => {
-              const espacioInfo = getEspacioInfo(reserva.espacioId);
+              const espacio = espacios.find((e) => e.id === reserva.espacioId);
               return (
                 <ReservationCard
                   key={reserva.id}
                   reserva={reserva}
-                  espacioName={espacioInfo.nombre}
-                  espacioCapacidad={espacioInfo.capacidad}
+                  espacioName={espacio?.nombre || 'Espacio Desconocido'}
+                  espacioCapacidad={espacio?.capacidad || 0}
                   onCancel={handleCancel}
                   isLoading={isLoading}
                 />

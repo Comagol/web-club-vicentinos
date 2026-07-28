@@ -16,7 +16,7 @@ describe('useReservationList', () => {
     vi.clearAllMocks();
   });
 
-  it('fetches reservations on mount', async () => {
+  it('fetches reservations and espacios on mount', async () => {
     const mockReservas = [
       {
         id: 'reserva-1',
@@ -32,6 +32,14 @@ describe('useReservationList', () => {
       },
     ];
 
+    const mockEspacios = [
+      { id: 'espacio-1', nombre: 'Salón A', capacidad: 50, descripcion: 'Test', activo: true },
+    ];
+
+    vi.spyOn(api.reservaService, 'getEspacios').mockResolvedValueOnce({
+      data: { data: mockEspacios },
+    } as any);
+
     vi.spyOn(api.reservaService, 'getReservas').mockResolvedValueOnce({
       data: { data: mockReservas },
     } as any);
@@ -40,6 +48,7 @@ describe('useReservationList', () => {
 
     await waitFor(() => {
       expect(result.current.reservations).toEqual(mockReservas);
+      expect(result.current.espacios).toEqual(mockEspacios);
     });
 
     expect(result.current.isLoading).toBe(false);
@@ -47,6 +56,10 @@ describe('useReservationList', () => {
   });
 
   it('handles loading state', () => {
+    vi.spyOn(api.reservaService, 'getEspacios').mockResolvedValueOnce({
+      data: { data: [] },
+    } as any);
+
     vi.spyOn(api.reservaService, 'getReservas').mockImplementationOnce(
       () =>
         new Promise((resolve) =>
@@ -85,6 +98,15 @@ describe('useReservationList', () => {
       },
     ];
 
+    const mockEspacios = [
+      { id: 'espacio-1', nombre: 'Salón A', capacidad: 50, descripcion: 'Test', activo: true },
+      { id: 'espacio-2', nombre: 'Salón B', capacidad: 30, descripcion: 'Test', activo: true },
+    ];
+
+    vi.spyOn(api.reservaService, 'getEspacios').mockResolvedValueOnce({
+      data: { data: mockEspacios },
+    } as any);
+
     vi.spyOn(api.reservaService, 'getReservas').mockResolvedValueOnce({
       data: { data: mockReservas },
     } as any);
@@ -108,6 +130,10 @@ describe('useReservationList', () => {
   });
 
   it('handles error when fetching reservations', async () => {
+    vi.spyOn(api.reservaService, 'getEspacios').mockResolvedValueOnce({
+      data: { data: [] },
+    } as any);
+
     vi.spyOn(api.reservaService, 'getReservas').mockRejectedValueOnce(
       new Error('Network error')
     );
@@ -134,6 +160,14 @@ describe('useReservationList', () => {
         createdAt: '2026-07-28T00:00:00Z',
       },
     ];
+
+    const mockEspacios = [
+      { id: 'espacio-1', nombre: 'Salón A', capacidad: 50, descripcion: 'Test', activo: true },
+    ];
+
+    vi.spyOn(api.reservaService, 'getEspacios').mockResolvedValueOnce({
+      data: { data: mockEspacios },
+    } as any);
 
     vi.spyOn(api.reservaService, 'getReservas').mockResolvedValueOnce({
       data: { data: mockReservas },

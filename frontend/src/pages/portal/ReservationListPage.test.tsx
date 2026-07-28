@@ -42,6 +42,11 @@ const mockReservations = [
   },
 ];
 
+const mockEspacios = [
+  { id: 'espacio-1', nombre: 'Salón Principal', capacidad: 100, descripcion: 'Main', activo: true },
+  { id: 'espacio-2', nombre: 'Cancha de Hockey', capacidad: 30, descripcion: 'Hockey', activo: true },
+];
+
 describe('ReservationListPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -50,6 +55,7 @@ describe('ReservationListPage', () => {
   it('renders page title', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: [],
+      espacios: [],
       isLoading: false,
       error: null,
       refetch: vi.fn(),
@@ -63,6 +69,7 @@ describe('ReservationListPage', () => {
   it('displays loading state', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: [],
+      espacios: [],
       isLoading: true,
       error: null,
       refetch: vi.fn(),
@@ -76,6 +83,7 @@ describe('ReservationListPage', () => {
   it('displays empty state message', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: [],
+      espacios: [],
       isLoading: false,
       error: null,
       refetch: vi.fn(),
@@ -90,6 +98,7 @@ describe('ReservationListPage', () => {
   it('displays error banner', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: [],
+      espacios: [],
       isLoading: false,
       error: 'Failed to load reservations',
       refetch: vi.fn(),
@@ -104,6 +113,7 @@ describe('ReservationListPage', () => {
   it('displays list of reservations', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: mockReservations,
+      espacios: mockEspacios,
       isLoading: false,
       error: null,
       refetch: vi.fn(),
@@ -118,6 +128,7 @@ describe('ReservationListPage', () => {
   it('shows sort and filter controls when reservations exist', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: mockReservations,
+      espacios: mockEspacios,
       isLoading: false,
       error: null,
       refetch: vi.fn(),
@@ -134,6 +145,7 @@ describe('ReservationListPage', () => {
   it('filters reservations by status', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: mockReservations,
+      espacios: mockEspacios,
       isLoading: false,
       error: null,
       refetch: vi.fn(),
@@ -156,6 +168,7 @@ describe('ReservationListPage', () => {
   it('sorts reservations by date', () => {
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: mockReservations,
+      espacios: mockEspacios,
       isLoading: false,
       error: null,
       refetch: vi.fn(),
@@ -179,6 +192,7 @@ describe('ReservationListPage', () => {
 
     vi.spyOn(hooksModule, 'useReservationList').mockReturnValue({
       reservations: mockReservations,
+      espacios: mockEspacios,
       isLoading: false,
       error: null,
       refetch: vi.fn(),
