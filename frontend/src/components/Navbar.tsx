@@ -85,6 +85,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => navigate('/login')}
               className="px-5 py-2 h-10 bg-navy-800 text-white text-sm font-500 rounded-lg hover:opacity-88 transition-opacity"
+              style={{ backgroundColor: '#1B3A6B' }}
             >
               Inicia sesión
             </button>
