@@ -14,8 +14,9 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { PortalHomePage } from './pages/portal/PortalHomePage';
 import { ProfilePage } from './pages/portal/ProfilePage';
 import { FeesPage } from './pages/portal/FeesPage';
-
 import { CarnetPage } from './pages/portal/CarnetPage';
+import { CarnetVerificationPage } from './pages/CarnetVerificationPage';
+
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
 
@@ -40,6 +41,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/boutique" element={<BoutiquePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/password-reset" element={<PasswordResetPage />} />
+      <Route path="/carnet/:id/verificar" element={<CarnetVerificationPage />} />
 
       {/* Protected Routes */}
       <Route
