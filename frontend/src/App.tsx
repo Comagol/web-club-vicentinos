@@ -19,6 +19,7 @@ import { ReservasPage } from './pages/portal/ReservasPage';
 import { ReservationListPage } from './pages/portal/ReservationListPage';
 import { CarnetVerificationPage } from './pages/CarnetVerificationPage';
 import { SubcomisionPortal } from './pages/SubcomisionPortal';
+import { ManagerOperationsPage } from './pages/ManagerOperationsPage';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -145,6 +146,24 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <SubcomisionPortal />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Manager Operations Routes - Module 9 */}
+      <Route
+        path="/gestion/operativo-jefe"
+        element={
+          <ProtectedRoute>
+            <ManagerOperationsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/gestion/operativo-jefe/*"
+        element={
+          <ProtectedRoute>
+            <ManagerOperationsPage />
           </ProtectedRoute>
         }
       />
