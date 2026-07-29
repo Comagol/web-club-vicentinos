@@ -18,6 +18,7 @@ import { CarnetPage } from './pages/portal/CarnetPage';
 import { ReservasPage } from './pages/portal/ReservasPage';
 import { ReservationListPage } from './pages/portal/ReservationListPage';
 import { CarnetVerificationPage } from './pages/CarnetVerificationPage';
+import { SubcomisionPortal } from './pages/SubcomisionPortal';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -129,6 +130,25 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* Subcommittee Portal Routes */}
+      <Route
+        path="/gestion/subcomision"
+        element={
+          <ProtectedRoute>
+            <SubcomisionPortal />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/gestion/subcomision/*"
+        element={
+          <ProtectedRoute>
+            <SubcomisionPortal />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Not Found */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
