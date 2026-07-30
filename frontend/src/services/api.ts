@@ -98,6 +98,8 @@ export const adminService = {
     client.get<ApiResponse<PaginatedResponse<Socio>>>('/admin/usuarios', { params: filtros }),
   crearUsuario: (data: any) =>
     client.post<ApiResponse<Socio>>('/admin/usuarios', data),
+  actualizarUsuario: (usuarioId: string, data: Partial<Socio>) =>
+    client.patch<ApiResponse<Socio>>(`/admin/usuarios/${usuarioId}`, data),
   eliminarUsuario: (usuarioId: string) =>
     client.delete<ApiResponse<null>>(`/admin/usuarios/${usuarioId}`),
 };

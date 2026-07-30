@@ -21,6 +21,8 @@ import { CarnetVerificationPage } from './pages/CarnetVerificationPage';
 import { SubcomisionPortal } from './pages/SubcomisionPortal';
 import { ManagerOperationsPage } from './pages/ManagerOperationsPage';
 import { EmployeeOperationsPage } from './pages/EmployeeOperationsPage';
+import { CDPanel } from './pages/CDPanel';
+import { AdminPanel } from './pages/AdminPanel';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -180,6 +182,42 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
+      {/* Admin Panel Routes - Module 11 */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute requiredRoles={['admin']}>
+            <AdminPanel />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/*"
+        element={
+          <ProtectedRoute requiredRoles={['admin']}>
+            <AdminPanel />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Board Commission Panel Routes - Module 6 */}
+      <Route
+        path="/gestion/cd"
+        element={
+          <ProtectedRoute>
+            <CDPanel />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/gestion/cd/*"
+        element={
+          <ProtectedRoute>
+            <CDPanel />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
