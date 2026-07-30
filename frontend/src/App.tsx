@@ -20,6 +20,7 @@ import { ReservationListPage } from './pages/portal/ReservationListPage';
 import { CarnetVerificationPage } from './pages/CarnetVerificationPage';
 import { SubcomisionPortal } from './pages/SubcomisionPortal';
 import { ManagerOperationsPage } from './pages/ManagerOperationsPage';
+import { EmployeeOperationsPage } from './pages/EmployeeOperationsPage';
 
 const AppRoutes: React.FC = () => {
   const { restoreSession, isLoading } = useAuth();
@@ -169,6 +170,16 @@ const AppRoutes: React.FC = () => {
       />
 
       {/* Not Found */}
+
+      {/* Employee Operations Routes - Module 8 */}
+      <Route
+        path="/gestion/operativo-empleado"
+        element={
+          <ProtectedRoute>
+            <EmployeeOperationsPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
